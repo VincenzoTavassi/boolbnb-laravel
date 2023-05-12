@@ -32,6 +32,9 @@ class ApartmentSeeder extends Seeder
             $apartment->longitude = $faker->longitude(2);
             $apartment->visible = $faker->boolean();
             $apartment->save();
+
+            $number = $faker->numberBetween(1, 15);
+            $apartment->messages()->attach($number);
         }
     }
 }
