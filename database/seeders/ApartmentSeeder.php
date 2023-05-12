@@ -36,17 +36,15 @@ class ApartmentSeeder extends Seeder
             $apartment->save();
 
             $service_number = $faker->numberBetween(1, 15);
-            $plan_number = $faker->numberBetween(Null | 1, 3);
             $apartment->services()->attach($service_number);
-            $apartment->plans()->attach($plan_number);
-            // $apartment->plans->start_date = $faker->dateTime();
-            // $apartment->plans->end_date = $faker->dateTime();
-        }
-
-        $apartments = Apartment::all();
-        foreach ($apartments as $apartment) {
-            $apartment->plans()->attach(['start_date' => $faker->date()]);
-            $apartment->plans()->attach(['end_date' => $faker->date()]);
+            $plan_number = $faker->numberBetween(1, 3);
+            $plan_iterations = rand(0, 5);
+            for ($k = 0; $k < $plan_iterations; $k++) {
+                $apartment->plans()->attach($plan_number, [
+                    'start_date' => $faker->dateTime(),
+                    'end_date' => $faker->dateTime()
+                ]);
+            }
         }
     }
 }
