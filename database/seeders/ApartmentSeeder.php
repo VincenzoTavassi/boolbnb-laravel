@@ -16,9 +16,9 @@ class ApartmentSeeder extends Seeder
      */
     public function run(Faker $faker)
     {
-        for ($i=0; $i < 20; $i++) {
+        for ($i = 0; $i < 20; $i++) {
             $apartment = new Apartment;
-            $apartment->title = 'Appartamento in '.$faker->city();
+            $apartment->title = 'Appartamento in ' . $faker->city();
             $apartment->description = $faker->paragraph(3);
             $apartment->image = 'https://picsum.photos/200/300';
             $apartment->price = $faker->randomFloat(2, 20, 300);
@@ -34,13 +34,19 @@ class ApartmentSeeder extends Seeder
             $number = $faker->numberBetween(1, 15);
             $apartment->user_id = $number;
             $apartment->save();
-            
+
             $service_number = $faker->numberBetween(1, 15);
             $plan_number = $faker->numberBetween(Null | 1, 3);
             $apartment->services()->attach($service_number);
             $apartment->plans()->attach($plan_number);
-            $apartment->plans->start_date = $faker->dateTime();
-            $apartment->plans->end_date = $faker->dateTime();
+            // $apartment->plans->start_date = $faker->dateTime();
+            // $apartment->plans->end_date = $faker->dateTime();
+        }
+
+        $apartments = Apartment::all();
+        foreach ($apartments as $apartment) {
+            $apartment->plans()->attach(['start_date' => $faker->date()]);
+            $apartment->plans()->attach(['end_date' => $faker->date()]);
         }
     }
 }
