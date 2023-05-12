@@ -2,7 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Message;
+use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
 
 class MessageSeeder extends Seeder
@@ -14,6 +15,15 @@ class MessageSeeder extends Seeder
      */
     public function run()
     {
-        //
+        $faker = Faker::create();
+
+        for ($i = 0; $i < 10; $i++) {
+            Message::create([
+                'text' => $faker->sentence(),
+                'email' => $faker->email(),
+                'name' => $faker->name(),
+            ]);
+        }
     }
 }
+
