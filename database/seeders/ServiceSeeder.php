@@ -21,6 +21,8 @@ class ServiceSeeder extends Seeder
             $service->title = $faker->word();
             $service->icon = 'https://icongaga-api.bytedancer.workers.dev/api/genHexer?name=' . $faker->word();
             $service->save();
+
+            
         }
     }
 }

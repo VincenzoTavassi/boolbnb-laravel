@@ -22,6 +22,7 @@ class MessageSeeder extends Seeder
                 'text' => $faker->sentence(),
                 'email' => $faker->email(),
                 'name' => $faker->name(),
+                'apartment_id' => $faker->numberBetween(1, 20),
             ]);
         }
     }

@@ -22,6 +22,7 @@ class ViewSeeder extends Seeder
             $view = new View();
             $view->date = $faker->dateTime();
             $view->ip_address = $faker->localIpv4();
+            $view->apartment_id = $faker->numberBetween(1, 20);
             $view->save();
         }
     }

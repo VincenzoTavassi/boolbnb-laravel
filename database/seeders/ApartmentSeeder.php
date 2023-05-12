@@ -31,10 +31,16 @@ class ApartmentSeeder extends Seeder
             $apartment->latitude = $faker->latitude();
             $apartment->longitude = $faker->longitude(2);
             $apartment->visible = $faker->boolean();
-            $apartment->save();
-
             $number = $faker->numberBetween(1, 15);
-            $apartment->messages()->attach($number);
+            $apartment->user_id = $number;
+            $apartment->save();
+            
+            $service_number = $faker->numberBetween(1, 15);
+            $plan_number = $faker->numberBetween(Null | 1, 3);
+            $apartment->services()->attach($service_number);
+            $apartment->plans()->attach($plan_number);
+            $apartment->plans->start_date = $faker->dateTime();
+            $apartment->plans->end_date = $faker->dateTime();
         }
     }
 }
