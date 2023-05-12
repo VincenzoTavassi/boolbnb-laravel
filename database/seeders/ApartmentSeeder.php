@@ -22,7 +22,16 @@ class ApartmentSeeder extends Seeder
             $apartment->description = $faker->paragraph(3);
             $apartment->image = 'https://picsum.photos/200/300';
             $apartment->price = $faker->randomFloat(2, 20, 300);
-            $apartment->single_beds = $faker->randomDigitNot(2);
+            $apartment->single_beds = $faker->numberBetween(1, 4);
+            $apartment->double_beds = $faker->numberBetween(1, 4);
+            $apartment->bathrooms = $faker->numberBetween(1, 4);
+            $apartment->square_meters = $faker->numberBetween(100, 400);
+            $apartment->rooms = $faker->numberBetween(1, 4);
+            $apartment->address = $faker->streetAddress();
+            $apartment->latitude = $faker->latitude();
+            $apartment->longitude = $faker->longitude(2);
+            $apartment->visible = $faker->boolean();
+            $apartment->save();
         }
     }
 }
