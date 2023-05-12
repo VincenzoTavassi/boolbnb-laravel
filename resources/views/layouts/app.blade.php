@@ -18,13 +18,11 @@
   <header>
     <!-- NAVBAR -->
     @include('layouts/partials/navbar')
-  
   </header>
   
   <main>
     <!-- JUMBOTRON -->
     <div class="container m-5">
-      @include('layouts/partials/searchForm')
     </div>
 
     <div class="container">

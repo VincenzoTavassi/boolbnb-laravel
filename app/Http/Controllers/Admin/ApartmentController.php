@@ -1,9 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\Apartment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ApartmentController extends Controller
 {
@@ -14,7 +16,9 @@ class ApartmentController extends Controller
      */
     public function index()
     {
-        //
+        $user_id = Auth::id();
+        $apartments = Apartment::where('user_id', '=', $user_id)->Paginate(4);
+        return view('admin.apartments.index', compact('apartments', 'user_id'));
     }
 
     /**
@@ -24,7 +28,7 @@ class ApartmentController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.apartments.form');
     }
 
     /**
@@ -35,7 +39,7 @@ class ApartmentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        dd($request->all());
     }
 
     /**
