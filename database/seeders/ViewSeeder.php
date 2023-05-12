@@ -18,10 +18,10 @@ class ViewSeeder extends Seeder
     {
         //$labels = ["", "", "", "", "", ""];
 
-        foreach ($labels as $label) {
+        for ($i = 0; $i < 15; $i++) {
             $view = new View();
             $view->date = $faker->dateTime();
-            $view->ip_address = $faker->;
+            $view->ip_address = $faker->localIpv4();
             $view->save();
         }
     }
