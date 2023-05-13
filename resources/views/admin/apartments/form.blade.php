@@ -66,7 +66,23 @@
     <textarea name="description" class="form-control" id="description" rows="2"></textarea>
 </div>
 </div>
-<div class="d-flex justify-content-center mb-3">
+
+<div class="row align-items-center ms-2">
+    @foreach ($services as $service)
+    <div class="col-3">
+            <input type="checkbox" 
+            id="service-{{ $service->id }}" 
+            name="services[]" 
+            value="{{ $service->id }}" 
+            class="form-check-input" @if (in_array($service->id, old('services', $apartment_services ?? []))) checked @endif>
+            <label for="service-{{ $service->id }}">
+            {{ $service->title }}
+            </label><br>
+        </div>
+        @endforeach
+</div>
+
+<div class="d-flex justify-content-center my-3">
     <button class="btn btn-primary w-25">INVIA</button>
 </div>
 </form>

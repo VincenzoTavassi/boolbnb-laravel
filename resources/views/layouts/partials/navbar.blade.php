@@ -20,6 +20,12 @@
           <li class="nav-item">
             <a class="nav-link text-light" href="{{ route('homepage') }}">{{ __('Home') }}</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link text-light" href="{{ route('apartments.index') }}">{{ __('Lista') }}</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-light" href="{{ route('apartments.create') }}">{{ __('Form') }}</a>
+          </li>
         </ul>
 
         <!-- Right Side Of Navbar -->
