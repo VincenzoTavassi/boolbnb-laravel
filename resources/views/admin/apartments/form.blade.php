@@ -1,6 +1,17 @@
 @extends('layouts.app')
 
 @section('scripts')
+ <link
+  rel="stylesheet"
+  type="text/css"
+  href="https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.18.0/maps/maps.css"
+/>
+<style>
+#map {
+      height: 500px;
+      width: 500px;
+      }
+</style>
 
 @endsection
 
@@ -195,28 +206,34 @@
 </div>
 
 <script type='text/javascript' defer>
+// ELEMENTI HTML
+const addressEl = document.getElementById('address');
+const longitudeEl = document.getElementById('longitude');
+const latitudeEl = document.getElementById('latitude');
+
 document.addEventListener("DOMContentLoaded", function() {
-  let addressEl = document.getElementById('address');
+  // Se c'è già un indirizzo, invia alla funzione le coordinate
+  if(addressEl.value) setMapCenter(latitudeEl.value, longitudeEl.value);
+  else setMapCenter(41.862175027654935, 12.468740017291827, 3);
+
+  // Se l'indirizzo cambia, esegui la funzione con le nuove coordinate
   addressEl.addEventListener("focusout", () => {
     let addressValue = addressEl.value;
-    // console.log(addressValue);
     delete axios.defaults.headers.common['X-Requested-With'] // Rimuovi il field per i CORS di TomTom
-const response = axios.get(`https://api.tomtom.com/search/2/geocode/${addressValue}.json`, {
-    headers: {
+    const response = axios.get(`https://api.tomtom.com/search/2/geocode/${addressValue}.json`, {
+      headers: {
         },
           params: {
             key: 'tg2x9BLlB0yJ4y7Snk5XhTOsnakmpgUO',
             limit: 1,
           }}          
           ).then(response => {
-            console.log(response.data.results[0])
         const coordinate = response.data.results[0].position;
         const address = response.data.results[0].address.freeformAddress;
-        const longitudeEl = document.getElementById('longitude');
-        const latitudeEl = document.getElementById('latitude');
+        // Parse a float delle coordinate
         longitudeEl.value = parseFloat(coordinate.lon);
         latitudeEl.value = parseFloat(coordinate.lat);
-        const mapEl = document.getElementById('map');
+        // Invio le coordinate alla funzione per la mappa
         setMapCenter(latitudeEl.value, longitudeEl.value);
           })})
         
@@ -224,9 +241,38 @@ const response = axios.get(`https://api.tomtom.com/search/2/geocode/${addressVal
      
 </script>
 
+   <script>
+  // ## TOM TOM MAP BUILDER ##
+  function setMapCenter(lat, lon, zoomlevel = null) {
+  if(!zoomlevel) zoomlevel = 16;
+  const apartmentTitle = document.getElementById('title');
+  const apartmentCoordinates = [lon, lat]
+  var map = tt.map({
+    container: "map",
+    key: "tg2x9BLlB0yJ4y7Snk5XhTOsnakmpgUO",
+    center: apartmentCoordinates,
+    zoom: zoomlevel,
+  })
+  
+  var marker = new tt.Marker().setLngLat(apartmentCoordinates).addTo(map)
 
+  var popupOffsets = {
+  top: [0, 0],
+  bottom: [0, -40],
+  "bottom-right": [0, -70],
+  "bottom-left": [0, -70],
+  left: [25, -35],
+  right: [-25, -35],
+}
 
- <script>
+var popup = new tt.Popup({ offset: popupOffsets }).setHTML(apartmentTitle.value)
+marker.setPopup(popup).togglePopup()
+
+}
+
+</script>
+<script>
+  // Script che aggiorna la vista dell'immagine da caricare quando viene selezionata
         const imageInputEl = document.getElementById('image');
         const imagePreviewEl = document.getElementById('image-preview');
         const placehorder = imagePreviewEl.src;
@@ -242,47 +288,6 @@ const response = axios.get(`https://api.tomtom.com/search/2/geocode/${addressVal
             } else imagePreviewEl.src = placehorder;
         })
     </script>
-  <link
-  rel="stylesheet"
-  type="text/css"
-  href="https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.18.0/maps/maps.css"
-/>
-<style>
-      #map {
-        height: 500px;
-        width: 500px;
-      }
-    </style>
+
 <script src="https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.18.0/maps/maps-web.min.js"></script>
-   <script>
-
-     // ## TOM TOM URL BUILDER ##
-  function setMapCenter(lat, lon) {
-
-  const apartmentTitle = document.getElementById('title');
-  const apartmentCoordinates = [lon, lat]
-  var map = tt.map({
-    container: "map",
-    key: "tg2x9BLlB0yJ4y7Snk5XhTOsnakmpgUO",
-    center: apartmentCoordinates,
-    zoom: 16
-  })
-  
-  var marker = new tt.Marker().setLngLat(apartmentCoordinates).addTo(map)
-
-  var popupOffsets = {
-  top: [0, 0],
-  bottom: [0, -70],
-  "bottom-right": [0, -70],
-  "bottom-left": [0, -70],
-  left: [25, -35],
-  right: [-25, -35],
-}
-
-var popup = new tt.Popup({ offset: popupOffsets }).setHTML(apartmentTitle.value)
-marker.setPopup(popup).togglePopup()
-
-     }
-
-</script>
 @endsection
