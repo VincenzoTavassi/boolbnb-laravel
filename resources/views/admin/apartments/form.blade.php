@@ -1,40 +1,6 @@
 @extends('layouts.app')
 
 @section('scripts')
-<script type='text/javascript' defer>
-document.addEventListener("DOMContentLoaded", function() {
-  let addressEl = document.getElementById('address');
-  addressEl.addEventListener("focusout", () => {
-    let addressValue = addressEl.value;
-    // console.log(addressValue);
-    delete axios.defaults.headers.common['X-Requested-With'] // Rimuovi il field per i CORS di TomTom
-const response = axios.get(`https://api.tomtom.com/search/2/geocode/${addressValue}.json`, {
-    headers: {
-        },
-          params: {
-            key: 'tg2x9BLlB0yJ4y7Snk5XhTOsnakmpgUO',
-            limit: 1,
-          }}          
-          ).then(response => {
-            console.log(response.data.results[0])
-        const coordinate = response.data.results[0].position;
-        const address = response.data.results[0].address.freeformAddress;
-        const longitudeEl = document.getElementById('longitude');
-        const latitudeEl = document.getElementById('latitude');
-        longitudeEl.value = parseFloat(coordinate.lon);
-        latitudeEl.value = parseFloat(coordinate.lat);
-        // console.log(longitudeEl.value)
-        // console.log(latitudeEl.value-)
-
-        console.log(latLonToTileZXY(latitudeEl.value, longitudeEl.value, 20))
-
-        // console.log(address);
-        // console.log(`Latitudine: ${coordinate.lat}, Longitudine: ${coordinate.lon}`);
-          })})
-        
-        })
-     
-</script>
 
 @endsection
 
@@ -174,11 +140,7 @@ const response = axios.get(`https://api.tomtom.com/search/2/geocode/${addressVal
                 <img src="{{$apartment->getImage()}}" class="w-75" id="image-preview" alt=""></div>
             </div>
             <div class="preview mt-2 w-50">
-                <img src="{{"https://api.tomtom.com/map/1/staticimage?key=jnhg5VXkLxfsGIiOxCLf1aNxiWphz9YA&zoom=16&center=$apartment->longitude,$apartment->latitude&format=png&layer=basic&style=main&view=IN&language=en-GB"}}" 
-                
-                {{-- api.tomtom.com/map/1/tile/basic/main/7/67/45.png?key=y2wBH9hGczqacZNvYMXxr60Ovxx97ugX&tileSize=256&view=IL&language=it-IT --}}
-                
-                class="w-75" id="map" alt=""></div>
+                <img src="" class="w-75" id="map" alt=""></div>
             </div>
  <div class="col form-check d-flex align-items-center">
      <input name="visible" class="form-check-input @error('visible') is-invalid @enderror" type="checkbox" value="{{old('visible',$apartment->visible)}}" id="visible[]" @if($apartment->visible) checked @endif>
@@ -231,6 +193,45 @@ const response = axios.get(`https://api.tomtom.com/search/2/geocode/${addressVal
 </div>
  </div>
 </div>
+
+<script type='text/javascript' defer>
+document.addEventListener("DOMContentLoaded", function() {
+  let addressEl = document.getElementById('address');
+  addressEl.addEventListener("focusout", () => {
+    let addressValue = addressEl.value;
+    // console.log(addressValue);
+    delete axios.defaults.headers.common['X-Requested-With'] // Rimuovi il field per i CORS di TomTom
+const response = axios.get(`https://api.tomtom.com/search/2/geocode/${addressValue}.json`, {
+    headers: {
+        },
+          params: {
+            key: 'tg2x9BLlB0yJ4y7Snk5XhTOsnakmpgUO',
+            limit: 1,
+          }}          
+          ).then(response => {
+            console.log(response.data.results[0])
+        const coordinate = response.data.results[0].position;
+        const address = response.data.results[0].address.freeformAddress;
+        const longitudeEl = document.getElementById('longitude');
+        const latitudeEl = document.getElementById('latitude');
+        longitudeEl.value = parseFloat(coordinate.lon);
+        latitudeEl.value = parseFloat(coordinate.lat);
+        // console.log(longitudeEl.value)
+        // console.log(latitudeEl.value-)
+        const mapEl = document.getElementById('map');
+        console.log(mapEl);
+        mapEl.src = getTomTomUri(latitudeEl.value, longitudeEl.value, 3)
+        // console.log(latLonToTileZXY(latitudeEl.value, longitudeEl.value, 20))
+
+        // console.log(address);
+        // console.log(`Latitudine: ${coordinate.lat}, Longitudine: ${coordinate.lon}`);
+          })})
+        
+        })
+     
+</script>
+
+
 
  <script>
         const imageInputEl = document.getElementById('image');
@@ -311,5 +312,25 @@ function latLonToTileZXY(lat, lon, zoomLevel) {
 
   return z.toString() + "/" + x.toString() + "/" + y.toString()
 }
+
+// ## TOM TOM URL BUILDER ##
+
+function getTomTomUri(lat, lon, zoomlevel) {
+console.log(lat)
+console.log(lon)
+console.log(zoomlevel)
+
+const latitude = lat;
+const longitude = lon;
+const zoom = zoomlevel;
+
+let urlParams = latLonToTileZXY(latitude, longitude, zoom);
+console.log(urlParams);
+return `https://api.tomtom.com/map/1/tile/basic/main/${urlParams}.png?key=jnhg5VXkLxfsGIiOxCLf1aNxiWphz9YA`
+
+}
+
 </script>
+
+
 @endsection
