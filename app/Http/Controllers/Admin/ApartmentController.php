@@ -133,8 +133,8 @@ class ApartmentController extends Controller
             [
                 'title' => 'required|max:100',
                 'description' => 'nullable|max:2500',
-                // 'image' => 'nullable|image|mimes:jpg,jpeg,bmp,png',
-                'image' => 'nullable|max:200',
+                'image' => 'nullable|image|mimes:jpg,jpeg,bmp,png',
+                // 'image' => 'nullable|max:200',
                 'price' => 'required|numeric',
                 'single_beds' => 'required|numeric',
                 'double_beds' => 'required|numeric',
