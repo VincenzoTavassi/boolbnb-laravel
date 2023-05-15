@@ -2,12 +2,56 @@
 
 @section('scripts')
 <script type='text/javascript'>
-let addressEl = document.getElementById('address');
-addressEl.addEventListener("focusout", () => {
+document.addEventListener("DOMContentLoaded", function() {
+  let addressEl = document.getElementById('address');
+  addressEl.addEventListener("focusout", () => {
     let addressValue = addressEl.value;
-    console.log(addressValue);
-});
+    // console.log(addressValue);
+        async searchLocation() {
+      try {
+        const response = await axios.get(`https://api.tomtom.com/search/2/geocode/${addressValue}.json`, {
+          params: {
+            key: 'tg2x9BLlB0yJ4y7Snk5XhTOsnakmpgUO',
+            limit: 1,
+          },
+        });
+        const coordinate = response.data.results[0].position;
+        console.log(`Latitudine: ${coordinate.lat}, Longitudine: ${coordinate.lon}`);
+        // Qui puoi usare le coordinate per fare una richiesta al tuo backend
+        // Puoi anche ritornare le coordinate, se necessario
+        return coordinate;
+      } catch (error) {
+        console.error(error);
+      }
+    },
 
+
+// import axios from 'axios';
+// export default {
+//   methods: {
+//     async searchLocation() {
+//       try {
+//         const response = await axios.get(`https://api.tomtom.com/search/2/geocode/${this.localita}.json`, {
+//           params: {
+//             key: 'tg2x9BLlB0yJ4y7Snk5XhTOsnakmpgUO',
+//             limit: 1,
+//           },
+//         });
+//         const coordinate = response.data.results[0].position;
+//         console.log(`Latitudine: ${coordinate.lat}, Longitudine: ${coordinate.lon}`);
+//         // Qui puoi usare le coordinate per fare una richiesta al tuo backend
+//         // Puoi anche ritornare le coordinate, se necessario
+//         return coordinate;
+//       } catch (error) {
+//         console.error(error);
+//       }
+//     },
+//   },
+// };
+
+
+  });
+});
 </script>
 @endsection
 
