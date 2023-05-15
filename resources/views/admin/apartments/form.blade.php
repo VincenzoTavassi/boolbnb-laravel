@@ -1,5 +1,16 @@
 @extends('layouts.app')
 
+@section('scripts')
+<script type='text/javascript'>
+let addressEl = document.getElementById('address');
+addressEl.addEventListener("focusout", () => {
+    let addressValue = addressEl.value;
+    console.log(addressValue);
+});
+
+</script>
+@endsection
+
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
