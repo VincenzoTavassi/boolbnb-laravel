@@ -136,8 +136,8 @@
                 {{ $message }}
             </div>
             @enderror
-            <div class="preview mt-2 w-50">
-                <img src="{{$apartment->getImage()}}" class="w-75" id="image-preview" alt=""></div>
+            <div class="preview mt-2">
+                <img src="{{$apartment->getImage()}}" class="w-100" id="image-preview" alt=""></div>
             </div>
             <div class="preview mt-2 w-50">
                 <div id="map" alt=""></div>
