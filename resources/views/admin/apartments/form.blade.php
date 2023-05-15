@@ -3,7 +3,25 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-    <div class="col">
+
+@if (session('message'))
+    <div class="alert alert-success my-3">
+        {{ session('message') }}
+    </div>
+@endif
+
+@if ($errors->any())
+  <div class="alert alert-danger">
+    <h4>Correggi i seguenti errori per proseguire: </h4>
+    <ul>
+      @foreach ($errors->all() as $error)
+        <li>{{ $error }}</li>
+      @endforeach
+    </ul>
+  </div>
+@endif
+
+    <div class="col p-0">
         <div class="card">
             <div class="card-header text-center">
                 <h1>Inserisci un appartamento</h1>
@@ -18,8 +36,8 @@
             <input type="text" class="form-control" name="title" id="title" placeholder="Scrivi il titolo dell'appartamento">
         </div>
         <div class="col mb-3">
-            <label for="title" class="form-label"><strong>Indirizzo</strong></label>
-            <input type="text" class="form-control" name="title" id="title" placeholder="Indirizzo dell'appartamento">
+            <label for="address" class="form-label"><strong>Indirizzo</strong></label>
+            <input type="text" class="form-control" name="address" id="address" placeholder="Indirizzo dell'appartamento">
         </div>
     </div>
     <div class="row justify-content-between">
@@ -55,7 +73,7 @@
                 <input type="text" class="form-control" name="image" id="image">
             </div>
  <div class="col form-check d-flex align-items-center">
-     <input name="visible" class="form-check-input" type="checkbox" value="" id="visible">
+     <input name="visible" class="form-check-input" type="checkbox" value="1" id="visible[]">
      <label class="form-check-label ms-2" for="visible">
          Vuoi pubblicare l'appartamento?
      </label>

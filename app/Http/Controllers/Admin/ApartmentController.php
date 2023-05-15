@@ -7,6 +7,10 @@ use App\Models\Apartment;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Arr;
+
+
 
 class ApartmentController extends Controller
 {
@@ -41,8 +45,17 @@ class ApartmentController extends Controller
      */
     public function store(Request $request)
     {
-        //dd($request->all());
-        
+        $user_id = Auth::id();
+        $data = $this->validation($request->all());
+        $apartment = new Apartment();
+        $apartment->fill($data);
+        $apartment->latitude = 0;
+        $apartment->longitude = 0;
+        $apartment->user_id = $user_id;
+        if (!Arr::exists($data, 'visible')) $apartment->visible = 0;
+        $apartment->save();
+        $apartment->services()->attach($data['services']);
+        return to_route('apartments.create')->with('message', 'Appartamento creato con successo');
     }
 
     /**
@@ -88,5 +101,34 @@ class ApartmentController extends Controller
     public function destroy(Apartment $apartment)
     {
         //
+    }
+
+    ## FUNCTIONS
+
+    private function validation($data)
+    {
+
+        return Validator::make(
+
+            $data,
+            [
+                'title' => 'required|max:100',
+                'description' => 'nullable|max:2500',
+                // 'image' => 'nullable|image|mimes:jpg,jpeg,bmp,png',
+                'image' => 'nullable|max:200',
+                'price' => 'required|numeric',
+                'single_beds' => 'required|numeric',
+                'double_beds' => 'required|numeric',
+                'bathrooms' => 'required|numeric',
+                'square_meters' => 'required|numeric',
+                'rooms' => 'required|numeric',
+                'address' => 'required|max:100',
+                'latitude' => 'float',
+                'longitude' => 'float',
+                'visible' => 'nullable|boolean',
+                'services' => 'required|exists:services,id',
+
+            ],
+        )->validate();
     }
 }
