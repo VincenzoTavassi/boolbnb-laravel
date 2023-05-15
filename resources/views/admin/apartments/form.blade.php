@@ -216,15 +216,8 @@ const response = axios.get(`https://api.tomtom.com/search/2/geocode/${addressVal
         const latitudeEl = document.getElementById('latitude');
         longitudeEl.value = parseFloat(coordinate.lon);
         latitudeEl.value = parseFloat(coordinate.lat);
-        // console.log(longitudeEl.value)
-        // console.log(latitudeEl.value-)
         const mapEl = document.getElementById('map');
-        console.log(mapEl);
-        mapEl.src = getTomTomUri(latitudeEl.value, longitudeEl.value, 3)
-        // console.log(latLonToTileZXY(latitudeEl.value, longitudeEl.value, 20))
-
-        // console.log(address);
-        // console.log(`Latitudine: ${coordinate.lat}, Longitudine: ${coordinate.lon}`);
+        mapEl.src = getTomTomUri(latitudeEl.value, longitudeEl.value, 17)
           })})
         
         })
@@ -316,21 +309,52 @@ function latLonToTileZXY(lat, lon, zoomLevel) {
 // ## TOM TOM URL BUILDER ##
 
 function getTomTomUri(lat, lon, zoomlevel) {
-console.log(lat)
-console.log(lon)
-console.log(zoomlevel)
 
-const latitude = lat;
-const longitude = lon;
+setMapCenter(lat, lon)
+const latitude = parseFloat(lat);
+const longitude = parseFloat(lon);
 const zoom = zoomlevel;
-
 let urlParams = latLonToTileZXY(latitude, longitude, zoom);
-console.log(urlParams);
 return `https://api.tomtom.com/map/1/tile/basic/main/${urlParams}.png?key=jnhg5VXkLxfsGIiOxCLf1aNxiWphz9YA`
+}
 
+function setMapCenter(lat, lon) {
+  const apartmentCoordinates = [lat, lon]
+  var map = tt.map({
+    container: "map",
+    key: "tg2x9BLlB0yJ4y7Snk5XhTOsnakmpgUO",
+    center: apartmentCoordinates,
+    zoom: 10
+  })
+
+  var marker = new tt.Marker().setLngLat(apartmentCoordinates).addTo(map)
+
+  var popupOffsets = {
+  top: [0, 0],
+  bottom: [0, -70],
+  "bottom-right": [0, -70],
+  "bottom-left": [0, -70],
+  left: [25, -35],
+  right: [-25, -35],
+}
+
+var popup = new tt.Popup({ offset: popupOffsets }).setHTML(
+  "your company name, your company address"
+)
+marker.setPopup(popup).togglePopup()
 }
 
 </script>
+
+<script>
+</script>
+<script src="https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.18.0/maps/maps-web.min.js"></script>
+
+  <link
+  rel="stylesheet"
+  type="text/css"
+  href="https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.18.0/maps/maps.css"
+/>
 
 
 @endsection
