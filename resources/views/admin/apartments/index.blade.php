@@ -26,6 +26,7 @@
                 <td>{{$apartment->updated_at}}</td>
                 <td>{{$apartment->created_at}}</td> 
                 <td>{{($apartment->visible) ? 'Yes' : 'No'}}</td>
+                <td><a href="{{route('apartments.edit', $apartment)}}">Modifica</a></td>
             </tr>
             @endforeach
         </tbody>

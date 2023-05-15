@@ -9,8 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Arr;
-
-
+use Illuminate\Support\Facades\Storage;
 
 class ApartmentController extends Controller
 {
@@ -33,8 +32,9 @@ class ApartmentController extends Controller
      */
     public function create()
     {
+        $apartment = new Apartment;
         $services = Service::all();
-        return view('admin.apartments.form', compact('services'));
+        return view('admin.apartments.form', compact('services', 'apartment'));
     }
 
     /**
@@ -47,12 +47,15 @@ class ApartmentController extends Controller
     {
         $user_id = Auth::id();
         $data = $this->validation($request->all());
+        if (Arr::exists($data, 'image')) { // Se c'è un'immagine nell'array $data
+            $path = Storage::put('uploads', $data['image']); // Ottieni il path e salvala nella cartella uploads
+            $data['image'] = $path; // Il dato da salvare in db diventa il path dell'immagine
+        }
         $apartment = new Apartment();
         $apartment->fill($data);
-        $apartment->latitude = 0;
-        $apartment->longitude = 0;
         $apartment->user_id = $user_id;
-        if (!Arr::exists($data, 'visible')) $apartment->visible = 0;
+        if (array_key_exists('visible', $data)) $apartment->visible = 1;
+        else $apartment->visible = 0;
         $apartment->save();
         $apartment->services()->attach($data['services']);
         return to_route('apartments.create')->with('message', 'Appartamento creato con successo');
@@ -77,7 +80,9 @@ class ApartmentController extends Controller
      */
     public function edit(Apartment $apartment)
     {
-        //
+        $services = Service::all();
+        $apartment_services = $apartment->services->pluck('id')->toArray();
+        return view('admin.apartments.form', compact('apartment', 'services', 'apartment_services'));
     }
 
     /**
@@ -89,7 +94,21 @@ class ApartmentController extends Controller
      */
     public function update(Request $request, Apartment $apartment)
     {
-        //
+        $data = $this->validation($request->all());
+        if (Arr::exists($data, 'image')) { // Se c'è un'immagine nell'array $data
+            if ($apartment->image) {
+                Storage::delete($apartment->image); // Elimina la vecchia immagine se presente
+            }
+            $path = Storage::put('uploads', $data['image']); // Ottieni il path della nuova e salvala nella cartella uploads
+            $data['image'] = $path; // Il dato da salvare in db diventa il path dell'immagine
+        }
+        // Se il form invia il contenuto delle checkbox (la chiave 'services' esiste), aggiorna la relazione
+        if (array_key_exists('services', $data)) $apartment->services()->sync($data['services']);
+        else $apartment->services()->detach(); // Altrimenti elimina tutte le associazioni
+        $apartment->update($data);
+        if (array_key_exists('visible', $data)) $apartment->visible = 1;
+        $apartment->save();
+        return to_route('apartments.edit', $apartment)->with('message', 'Appartamento modificato con successo');
     }
 
     /**
@@ -123,8 +142,8 @@ class ApartmentController extends Controller
                 'square_meters' => 'required|numeric',
                 'rooms' => 'required|numeric',
                 'address' => 'required|max:100',
-                'latitude' => 'float',
-                'longitude' => 'float',
+                'latitude' => 'numeric',
+                'longitude' => 'numeric',
                 'visible' => 'nullable|boolean',
                 'services' => 'required|exists:services,id',
 

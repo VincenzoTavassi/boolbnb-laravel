@@ -16,13 +16,34 @@ class ServiceSeeder extends Seeder
      */
     public function run(Faker $faker)
     {
-        for ($i = 0; $i < 15; $i++) {
-            $service = new Service;
-            $service->title = $faker->word();
-            $service->icon = 'https://icongaga-api.bytedancer.workers.dev/api/genHexer?name=' . $faker->word();
-            $service->save();
+        $servizi = [
+            'Wi-Fi',
+            'Posto Auto',
+            'Piscina',
+            'Aria condizionata',
+            'Colazione inclusa',
+            'Accesso per disabili',
+            'Terrazza panoramica',
+            'Servizio di pulizia giornaliero',
+            'Cucina completamente attrezzata',
+            'TV via cavo/satellite',
+            'Animali domestici ammessi',
+            'Servizio di lavanderia',
+            'Navetta aeroportuale',
+            'Area barbecue',
+            'Noleggio biciclette',
+            'Self check-in',
+            'Sauna',
+            'Vista Mare',
+            'Portineria',
 
-            
+        ];
+
+        foreach ($servizi as $servizio) {
+            $service = new Service;
+            $service->title = $servizio;
+            $service->icon = 'https://icongaga-api.bytedancer.workers.dev/api/genHexer?name=' . $servizio;
+            $service->save();
         }
     }
 }

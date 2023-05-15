@@ -25,8 +25,8 @@ return new class extends Migration
             $table->integer('square_meters');
             $table->integer('rooms');
             $table->string('address', 100);
-            $table->float('latitude');
-            $table->float('longitude');
+            $table->double('latitude', 10, 8);
+            $table->double('longitude', 11, 8);
             $table->boolean('visible');
             $table->timestamps();
 
