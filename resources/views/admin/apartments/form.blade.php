@@ -24,7 +24,7 @@ const response = axios.get(`https://api.tomtom.com/search/2/geocode/${addressVal
         longitudeEl.value = parseFloat(coordinate.lon);
         latitudeEl.value = parseFloat(coordinate.lat);
         // console.log(longitudeEl.value)
-        // console.log(latitudeEl.value)
+        // console.log(latitudeEl.value-)
 
         console.log(latLonToTileZXY(latitudeEl.value, longitudeEl.value, 20))
 
