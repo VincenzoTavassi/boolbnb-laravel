@@ -140,7 +140,7 @@
                 <img src="{{$apartment->getImage()}}" class="w-75" id="image-preview" alt=""></div>
             </div>
             <div class="preview mt-2 w-50">
-                <img src="" class="w-75" id="map" alt=""></div>
+                <div id="map" alt=""></div>
             </div>
  <div class="col form-check d-flex align-items-center">
      <input name="visible" class="form-check-input @error('visible') is-invalid @enderror" type="checkbox" value="{{old('visible',$apartment->visible)}}" id="visible[]" @if($apartment->visible) checked @endif>
@@ -217,7 +217,7 @@ const response = axios.get(`https://api.tomtom.com/search/2/geocode/${addressVal
         longitudeEl.value = parseFloat(coordinate.lon);
         latitudeEl.value = parseFloat(coordinate.lat);
         const mapEl = document.getElementById('map');
-        mapEl.src = getTomTomUri(latitudeEl.value, longitudeEl.value, 17)
+        setMapCenter(latitudeEl.value, longitudeEl.value);
           })})
         
         })
@@ -242,91 +242,32 @@ const response = axios.get(`https://api.tomtom.com/search/2/geocode/${addressVal
             } else imagePreviewEl.src = placehorder;
         })
     </script>
+  <link
+  rel="stylesheet"
+  type="text/css"
+  href="https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.18.0/maps/maps.css"
+/>
+<style>
+      #map {
+        height: 500px;
+        width: 500px;
+      }
+    </style>
+<script src="https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.18.0/maps/maps-web.min.js"></script>
+   <script>
 
-    <script>
-function latLonToTileZXY(lat, lon, zoomLevel) {
-  const MIN_ZOOM_LEVEL = 0
-  const MAX_ZOOM_LEVEL = 22
-  const MIN_LAT = -85.051128779807
-  const MAX_LAT = 85.051128779806
-  const MIN_LON = -180.0
-  const MAX_LON = 180.0
+     // ## TOM TOM URL BUILDER ##
+  function setMapCenter(lat, lon) {
 
-  if (
-    zoomLevel == undefined ||
-    isNaN(zoomLevel) ||
-    zoomLevel < MIN_ZOOM_LEVEL ||
-    zoomLevel > MAX_ZOOM_LEVEL
-  ) {
-    throw new Error(
-      "Zoom level value is out of range [" +
-        MIN_ZOOM_LEVEL.toString() +
-        ", " +
-        MAX_ZOOM_LEVEL.toString() +
-        "]"
-    )
-  }
-
-  if (lat == undefined || isNaN(lat) || lat < MIN_LAT || lat > MAX_LAT) {
-    throw new Error(
-      "Latitude value is out of range [" +
-        MIN_LAT.toString() +
-        ", " +
-        MAX_LAT.toString() +
-        "]"
-    )
-  }
-
-  if (lon == undefined || isNaN(lon) || lon < MIN_LON || lon > MAX_LON) {
-    throw new Error(
-      "Longitude value is out of range [" +
-        MIN_LON.toString() +
-        ", " +
-        MAX_LON.toString() +
-        "]"
-    )
-  }
-
-  let z = Math.trunc(zoomLevel)
-  let xyTilesCount = Math.pow(2, z)
-  let x = Math.trunc(Math.floor(((lon + 180.0) / 360.0) * xyTilesCount))
-  let y = Math.trunc(
-    Math.floor(
-      ((1.0 -
-        Math.log(
-          Math.tan((lat * Math.PI) / 180.0) +
-            1.0 / Math.cos((lat * Math.PI) / 180.0)
-        ) /
-          Math.PI) /
-        2.0) *
-        xyTilesCount
-    )
-  )
-
-  return z.toString() + "/" + x.toString() + "/" + y.toString()
-}
-
-// ## TOM TOM URL BUILDER ##
-
-function getTomTomUri(lat, lon, zoomlevel) {
-
-setMapCenter(lat, lon)
-const latitude = parseFloat(lat);
-const longitude = parseFloat(lon);
-const zoom = zoomlevel;
-let urlParams = latLonToTileZXY(latitude, longitude, zoom);
-return `https://api.tomtom.com/map/1/tile/basic/main/${urlParams}.png?key=jnhg5VXkLxfsGIiOxCLf1aNxiWphz9YA`
-}
-
-function setMapCenter(lat, lon) {
-  const apartmentCoordinates = [lat, lon]
+  const apartmentTitle = document.getElementById('title');
+  const apartmentCoordinates = [lon, lat]
   var map = tt.map({
     container: "map",
     key: "tg2x9BLlB0yJ4y7Snk5XhTOsnakmpgUO",
     center: apartmentCoordinates,
-    zoom: 10
+    zoom: 16
   })
-
+  
   var marker = new tt.Marker().setLngLat(apartmentCoordinates).addTo(map)
 
   var popupOffsets = {
@@ -338,23 +279,10 @@ function setMapCenter(lat, lon) {
   right: [-25, -35],
 }
 
-var popup = new tt.Popup({ offset: popupOffsets }).setHTML(
-  "your company name, your company address"
-)
+var popup = new tt.Popup({ offset: popupOffsets }).setHTML(apartmentTitle.value)
 marker.setPopup(popup).togglePopup()
-}
+
+     }
 
 </script>
-
-<script>
-</script>
-<script src="https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.18.0/maps/maps-web.min.js"></script>
-
-  <link
-  rel="stylesheet"
-  type="text/css"
-  href="https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.18.0/maps/maps.css"
-/>
-
-
 @endsection
