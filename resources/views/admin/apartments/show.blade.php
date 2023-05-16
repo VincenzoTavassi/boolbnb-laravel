@@ -48,9 +48,11 @@
             <div>
                 <h5>Ulteriori servizi:</h5>
                 <div class="row">
-                    <div class="col-6">
-                        {{}}
-                    </div>
+                    @foreach($apartment->services as $service)
+                        <div class="col">
+                            {{ $service->title }}
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </div>
