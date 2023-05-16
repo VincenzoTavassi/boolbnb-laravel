@@ -10,6 +10,9 @@
 
   <title>{{ env('APP_NAME', 'Laravel') }}</title>
 
+  <!-- FONTS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
   <!-- Vite -->
   @vite(['resources/js/app.js'])
   @yield('scripts')
@@ -23,17 +26,24 @@
   
   <main>
     <!-- JUMBOTRON -->
-    <div class="container m-5">
+    <div class="container">
+      <div>
+        <h3 class="mt-3">
+            @yield('title')
+        </h3>
+    </div>
     </div>
 
     <div class="container">
       @yield('card')
     </div>
 
-    <div class="py-5">
+    <div class="py-3">
       @yield('content')
     </div>
   </main>
+
+  @yield('modals')
 </body>
 
 </html>
