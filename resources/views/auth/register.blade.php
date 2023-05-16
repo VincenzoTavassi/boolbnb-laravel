@@ -8,7 +8,7 @@
           <div class="card-header">{{ __('Register') }}</div>
 
           <div class="card-body">
-            <form method="POST" action="{{ route('register') }}">
+            <form method="POST" action="{{ route('register') }}" class="needs-validation" novalidate>
               @csrf
 
               <div class="mb-4 row">
@@ -109,4 +109,25 @@
       </div>
     </div>
   </div>
+  <script>
+    // FORM VALIDATION 
+    (() => {
+  'use strict'
+
+  // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  const forms = document.querySelectorAll('.needs-validation')
+
+  // Loop over them and prevent submission
+  Array.from(forms).forEach(form => {
+    form.addEventListener('submit', event => {
+      if (!form.checkValidity()) {
+        event.preventDefault()
+        event.stopPropagation()
+      }
+
+      form.classList.add('was-validated')
+    }, false)
+  })
+})()
+</script>
 @endsection
