@@ -19,6 +19,27 @@
     .pub{
       padding-left: 12px !important;
     }
+    #search-results {
+      position: absolute;
+      top: 100%;
+      width: 95%;
+      height: 100px;
+      background-color: rgba(255, 255, 255, 0.5);
+      border: 1px solid gray;
+      z-index: 99;
+      padding-top: 5px;
+      padding-bottom: 5px;
+      cursor: pointer;
+      overflow: auto;
+    }
+    .result:hover {
+      background-color: lightskyblue;
+      color: white;
+    }
+    .result {
+      padding-left: 10px;
+      padding-right: 10px;
+    }
   </style>
 @endsection
 
@@ -106,7 +127,9 @@
                 @enderror
             </div>
 
-              <div class="col">
+              <div class="col position-relative">
+                <div id="search-results" class="d-none">
+                </div>
                     <label for="address" class="form-label"><strong>Indirizzo</strong></label>
                     <input type="text" class="form-control @error('address') is-invalid @enderror" name="address" id="address" placeholder="Indirizzo dell'appartamento"
                       value="{{old('address', $apartment->address)}}" required>
@@ -263,37 +286,90 @@
   const addressEl = document.getElementById('address');
   const longitudeEl = document.getElementById('longitude');
   const latitudeEl = document.getElementById('latitude');
+  const searchResultsEl = document.getElementById('search-results');
 
   document.addEventListener("DOMContentLoaded", function() {
     // Se c'è già un indirizzo, invia alla funzione le coordinate
     if(addressEl.value) setMapCenter(latitudeEl.value, longitudeEl.value);
-    else setMapCenter(41.862175027654935, 12.468740017291827, 3);
+    else setMapCenter(41.862175027654935, 12.468740017291827, 3); // Altrimenti posizionati su Roma, zoom 3
 
     // Se l'indirizzo cambia, esegui la funzione con le nuove coordinate
-    addressEl.addEventListener("focusout", () => {
-      let addressValue = addressEl.value;
-    delete axios.defaults.headers.common['X-Requested-With'] // Rimuovi il field per i CORS di TomTom
+    // addressEl.addEventListener("focusout", () => {
+    //   let addressValue = addressEl.value;
+    // delete axios.defaults.headers.common['X-Requested-With'] // Rimuovi il field per i CORS di TomTom
+    // const response = axios.get(`https://api.tomtom.com/search/2/geocode/${addressValue}.json`, {
+    //   headers: {
+    //     },
+    //   params: {
+    //     key: 'tg2x9BLlB0yJ4y7Snk5XhTOsnakmpgUO',
+    //     limit: 1,
+    //   }}          
+    //   ).then(response => {
+    //     // console.log(response.data.results)
+    //     const coordinate = response.data.results[0].position;
+    //     const address = response.data.results[0].address.freeformAddress;
+    //     // Parse a float delle coordinate
+    //     longitudeEl.value = parseFloat(coordinate.lon);
+    //     latitudeEl.value = parseFloat(coordinate.lat);
+    //     // Invio le coordinate alla funzione per la mappa
+    //     setMapCenter(latitudeEl.value, longitudeEl.value);
+    // })})
+  })   
+</script>
+
+<script>
+// CUSTOM SCRIPT PER CERCARE GLI INDIRIZZI MENTRE SI DIGITA E AL CLICK AGGIORNA LA MAPPA
+let addressInputEl = document.getElementById('address')
+addressEl.addEventListener('keyup', () => {
+  // Rimuovo risultati precedenti e resetto l'array
+  let previousResults = document.querySelectorAll('.result')
+  previousResults.forEach(result => result.remove())
+  let possibleAddresses = [];
+  // TODO: Se l'utente clicca al di fuori della select, la chiudiamo
+ 
+  // Mostro il div con i risultati
+  searchResultsEl.classList.remove('d-none')
+  let addressValue = addressEl.value; // input dell'utente
+  delete axios.defaults.headers.common['X-Requested-With'] // Rimuovi il field per i CORS di TomTom
     const response = axios.get(`https://api.tomtom.com/search/2/geocode/${addressValue}.json`, {
       headers: {
         },
       params: {
         key: 'tg2x9BLlB0yJ4y7Snk5XhTOsnakmpgUO',
-        limit: 1,
-      }}          
-      ).then(response => {
-        const coordinate = response.data.results[0].position;
-        const address = response.data.results[0].address.freeformAddress;
-        // Parse a float delle coordinate
-        longitudeEl.value = parseFloat(coordinate.lon);
-        latitudeEl.value = parseFloat(coordinate.lat);
-        // Invio le coordinate alla funzione per la mappa
-        setMapCenter(latitudeEl.value, longitudeEl.value);
-    })})
-  })   
+        limit: 5,
+      }}).then(response => {
+        response.data.results.forEach(risultato => {
+          possibleAddresses.push({   // Inserisco indirizzo e coordinate nell'array
+            indirizzo: risultato.address.freeformAddress,
+            latitude: parseFloat(risultato.position.lat),
+            longitude: parseFloat(risultato.position.lon),
+          })
+          
+        })
+        
+      }).finally(()=> { // Ciclo per stampare indirizzi nel div
+        for (let i = 0; i < possibleAddresses.length; i++) {
+          let resultAddress = possibleAddresses[i];
+          let resultDiv = document.createElement('div');
+          resultDiv.classList.add("result")
+          resultDiv.innerHTML += resultAddress.indirizzo;
+          resultDiv.addEventListener('click', () => {
+            addressInputEl.value = resultAddress.indirizzo;
+            searchResultsEl.classList.add('d-none')
+            // Aggiorno gli hidden fields
+            longitudeEl.value = resultAddress.longitude;
+            latitudeEl.value = resultAddress.latitude;
+            // Invia coordinate alla funzione per aggiornare la mappa
+            setMapCenter(latitudeEl.value, longitudeEl.value);
+          })
+          searchResultsEl.append(resultDiv);
+        }
+      })})
+
 </script>
 
 <script>
-  // ## TOM TOM MAP BUILDER ##
+  // ## FUNZIONE TOM TOM MAP BUILDER ##
   function setMapCenter(lat, lon, zoomlevel = null) {
     if(!zoomlevel) zoomlevel = 16;
     const apartmentTitle = document.getElementById('title');
@@ -339,7 +415,7 @@
     })
 </script>
 <script>
-    // FORM VALIDATION 
+    // BOOTSTRAP FORM VALIDATION 
     (() => {
   'use strict'
 
@@ -360,7 +436,7 @@
 })()
 </script>
 <script>
-    // CHECKBOX VALIDATION, RICHIEDI ALMENO UN CHECKBOX
+    // CUSTOM CHECKBOX VALIDATION, RICHIEDI ALMENO UN CHECKBOX
     const serviceCheckbox = document.querySelectorAll("[id^='service-']");
     let checkedBoxes = false;
       serviceCheckbox.forEach(service => {
