@@ -23,4 +23,17 @@ class ApartmentController extends Controller
             ->paginate(12);
         return response()->json($apartments);
     }
+
+    /**
+     * Display the details of the requested resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        $apartment = Apartment::where('id', '=', $id)
+            ->with('plans', 'services')
+            ->get();
+        return response()->json($apartment);
+    }
 }
