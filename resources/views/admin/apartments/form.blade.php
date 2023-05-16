@@ -45,20 +45,19 @@
       
       <!-- CONTAINER DEL FORMAT -->
       <div class="col">
-        <div class="card">
-          <div class="card-header text-center">
-
+        <div class="card container">
             <!-- EDIT -->
             @if($apartment->id)
-              <h1>Modifica {{$apartment->title}}
-              <form action="{{route('apartments.update', $apartment)}}" method="post" class="row" enctype="multipart/form-data">
+              <form action="{{route('apartments.update', $apartment)}}" method="post" class="row needs-validation" novalidate enctype="multipart/form-data">
             @method('put')
             <!-- CREATE -->
             @else
-              <h1>Inserisci un appartamento</h1>
-              <form action="{{route('apartments.store')}}" method="post" class="row" enctype="multipart/form-data">
+              <form action="{{route('apartments.store')}}" method="post" class="row needs-validation" novalidate enctype="multipart/form-data">
             @endif
             @csrf
+            
+          <div class="card-header text-center">
+            <h1>{{$apartment->id ? 'Modifica ' . $apartment->title : 'Inserisci un nuovo appartamento'}}</h1>
           </div>
 
           <div class="card-body container d-flex flex-column p-3">
@@ -66,12 +65,15 @@
               <div class="col mb-3">
                 <label for="title" class="form-label"><strong>Titolo descrittivo</strong></label>
                 <input type="text" class="form-control @error('title') is-invalid @enderror" name="title" id="title" placeholder="Scrivi il titolo dell'appartamento"
-                  value="{{old('title', $apartment->title)}}">
+                  value="{{old('title', $apartment->title)}}" required>
                 @error('title')
                   <div class="invalid-feedback">
                     {{ $message }}
                   </div>
                 @enderror
+                <div class="valid-feedback">
+                Looks good!
+                </div>
               </div>
 
               <div class="col form-check d-flex align-items-center pub">
@@ -101,7 +103,7 @@
               <div class="col">
                     <label for="address" class="form-label"><strong>Indirizzo</strong></label>
                     <input type="text" class="form-control @error('address') is-invalid @enderror" name="address" id="address" placeholder="Indirizzo dell'appartamento"
-                      value="{{old('address', $apartment->address)}}">
+                      value="{{old('address', $apartment->address)}}" required>
                     @error('address')
                       <div class="invalid-feedback">
                         {{ $message }}
@@ -138,7 +140,7 @@
               <div class="col">
                 <label for="price" class="form-label"><strong>Prezzo per notte</strong></label>
                 <input type="number" class="form-control @error('price') is-invalid @enderror" name="price" id="price"
-                  value="{{old('price', $apartment->price)}}">
+                  value="{{old('price', $apartment->price)}}" required>
                 @error('price')
                   <div class="invalid-feedback">
                     {{ $message }}
@@ -149,7 +151,7 @@
               <div class="col mb-3">
                 <label for="square_meters" class="form-label"><strong>Superficie in mq</strong></label>
                 <input type="number" class="form-control @error('square_meters') is-invalid @enderror" name="square_meters" id="square_meters"
-                  value="{{old('square_meters', $apartment->square_meters)}}">
+                  value="{{old('square_meters', $apartment->square_meters)}}" required>
                 @error('square_meters')
                   <div class="invalid-feedback">
                     {{ $message }}
@@ -160,7 +162,7 @@
               <div class="col mb-3">
                 <label for="single_beds" class="form-label"><strong>Letti singoli</strong></label>
                 <input type="number" class="form-control @error('single_beds') is-invalid @enderror" name="single_beds" id="single_beds"
-                  value="{{old('single_beds', $apartment->single_beds)}}">
+                  value="{{old('single_beds', $apartment->single_beds)}}" required>
                 @error('single_beds')
                   <div class="invalid-feedback">
                     {{ $message }}
@@ -171,7 +173,7 @@
               <div class="col mb-3">
                 <label for="double_beds" class="form-label"><strong>Letti Matrimoniali</strong></label>
                 <input type="number" class="form-control @error('double_beds') is-invalid @enderror" name="double_beds" id="double_beds"
-                  value="{{old('double_beds', $apartment->double_beds)}}">
+                  value="{{old('double_beds', $apartment->double_beds)}}" required>
                 @error('double_beds')
                   <div class="invalid-feedback">
                     {{ $message }}
@@ -184,7 +186,7 @@
                 <input type="number" class="form-control @error('bathrooms') is-invalid @enderror" 
                   name="bathrooms" 
                   id="bathrooms"
-                  value="{{old('bathrooms', $apartment->bathrooms)}}">
+                  value="{{old('bathrooms', $apartment->bathrooms)}}" required>
                 @error('bathrooms')
                   <div class="invalid-feedback">
                     {{ $message }}
@@ -195,7 +197,7 @@
               <div class="col mb-3">
                 <label for="rooms" class="form-label"><strong>Camere</strong></label>
                 <input type="number" class="form-control @error('rooms') is-invalid @enderror" name="rooms" id="rooms"
-                  value="{{old('rooms', $apartment->rooms)}}">
+                  value="{{old('rooms', $apartment->rooms)}}" required>
                 @error('rooms')
                   <div class="invalid-feedback">
                     {{ $message }}
@@ -210,7 +212,7 @@
               </div>
               @foreach ($services as $service)
                 <div class="col-3">
-                  <input type="checkbox" 
+                  <input type="checkbox"
                     id="service-{{ $service->id }}" 
                     name="services[]" 
                     value="{{ $service->id }}"
@@ -320,6 +322,27 @@
       }
       } else imagePreviewEl.src = placehorder;
     })
+</script>
+<script>
+    // FORM VALIDATION 
+    (() => {
+  'use strict'
+
+  // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  const forms = document.querySelectorAll('.needs-validation')
+
+  // Loop over them and prevent submission
+  Array.from(forms).forEach(form => {
+    form.addEventListener('submit', event => {
+      if (!form.checkValidity()) {
+        event.preventDefault()
+        event.stopPropagation()
+      }
+
+      form.classList.add('was-validated')
+    }, false)
+  })
+})()
 </script>
 
 <script src="https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.18.0/maps/maps-web.min.js"></script>
