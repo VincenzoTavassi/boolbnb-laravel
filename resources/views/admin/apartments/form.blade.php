@@ -71,9 +71,7 @@
                     {{ $message }}
                   </div>
                 @enderror
-                <div class="valid-feedback">
-                Looks good!
-                </div>
+                <div class="valid-feedback">OK!</div>
               </div>
 
               <div class="col form-check d-flex align-items-center pub">
@@ -99,7 +97,9 @@
                     {{ $message }}
                   </div>
                 @enderror
-              </div>
+            <div class="valid-feedback">OK!</div>  
+            </div>
+
               <div class="col">
                     <label for="address" class="form-label"><strong>Indirizzo</strong></label>
                     <input type="text" class="form-control @error('address') is-invalid @enderror" name="address" id="address" placeholder="Indirizzo dell'appartamento"
@@ -109,6 +109,7 @@
                         {{ $message }}
                       </div>
                     @enderror
+                    <div class="valid-feedback">OK!</div>
                   </div>  
                 </div>
             </div>
@@ -124,8 +125,8 @@
               </div>
             </div>
             
-            <div class="row">
-              <div class="col m-3">
+            <div class="row m-0">
+              <div class="col">
                 <label for="description" class="form-label"><strong>Descrizione</strong></label>
                 <textarea name="description" class="form-control @error('description') is-invalid @enderror" id="description" rows="2">{{old('description', $apartment->description)}}</textarea>
                 @error('description')
@@ -134,9 +135,10 @@
                   </div>
                 @enderror
               </div>
+              <div class="valid-feedback">OK!</div>
             </div>
 
-            <div class="row justify-content-between m-2">
+            <div class="row justify-content-between my-2 mx-0">
               <div class="col">
                 <label for="price" class="form-label"><strong>Prezzo per notte</strong></label>
                 <input type="number" class="form-control @error('price') is-invalid @enderror" name="price" id="price"
@@ -146,6 +148,7 @@
                     {{ $message }}
                   </div>
                 @enderror
+                <div class="valid-feedback">OK!</div>
               </div>
 
               <div class="col mb-3">
@@ -157,6 +160,7 @@
                     {{ $message }}
                   </div>
                 @enderror
+                <div class="valid-feedback">OK!</div>
               </div>
 
               <div class="col mb-3">
@@ -168,6 +172,7 @@
                     {{ $message }}
                   </div>
                 @enderror
+                <div class="valid-feedback">OK!</div>
               </div>
 
               <div class="col mb-3">
@@ -179,6 +184,7 @@
                     {{ $message }}
                   </div>
                 @enderror
+                <div class="valid-feedback">OK!</div>
               </div>
 
               <div class="col mb-3">
@@ -192,6 +198,7 @@
                     {{ $message }}
                   </div>
                 @enderror
+                <div class="valid-feedback">OK!</div>
               </div>
 
               <div class="col mb-3">
@@ -203,6 +210,7 @@
                     {{ $message }}
                   </div>
                 @enderror
+                <div class="valid-feedback">OK!</div>
               </div>
             </div> 
             
