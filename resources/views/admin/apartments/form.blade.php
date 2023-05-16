@@ -9,9 +9,16 @@
 
   <style>
     #map {
-      height: 200px;
-      width: 200px;
+      height: 300px;
+      width: 100%;
       }
+    .preview{
+      min-height: 300px;
+      min-width: 300px;
+    }
+    .pub{
+      padding-left: 12px !important;
+    }
   </style>
 @endsection
 
@@ -37,7 +44,7 @@
       @endif
       
       <!-- CONTAINER DEL FORMAT -->
-      <div class="col p-0">
+      <div class="col">
         <div class="card">
           <div class="card-header text-center">
 
@@ -54,7 +61,7 @@
             @csrf
           </div>
 
-          <div class="card-body container d-flex flex-column">
+          <div class="card-body container d-flex flex-column p-3">
             <div class="row row-cols-2">
               <div class="col mb-3">
                 <label for="title" class="form-label"><strong>Titolo descrittivo</strong></label>
@@ -67,8 +74,8 @@
                 @enderror
               </div>
 
-              <div class="col form-check d-flex align-items-center">
-                <input name="visible" class="form-check-input @error('visible') is-invalid @enderror" type="checkbox" value="{{old('visible',$apartment->visible)}}" id="visible[]" @if($apartment->visible) checked @endif>
+              <div class="col form-check d-flex align-items-center pub">
+                <input name="visible" class="form-check-input m-0 @error('visible') is-invalid @enderror" type="checkbox" value="{{old('visible',$apartment->visible)}}" id="visible[]" @if($apartment->visible) checked @endif>
                 <label class="form-check-label ms-2" for="visible">
                   Vuoi pubblicare l'appartamento?
                 </label>
@@ -81,17 +88,17 @@
             </div>
 
             <div class="row row-cols-2">
-                <div class="col">
-                  <label for="image" class="form-label"><strong>Immagine</strong></label>
-                  <input type="file" class="form-control @error('image') is-invalid @enderror" name="image" id="image"
-                    value="{{old('image', $apartment->image)}}">
-                  @error('image')
-                    <div class="invalid-feedback">
-                      {{ $message }}
-                    </div>
-                  @enderror
-                </div>
-                <div class="col">
+              <div class="col">
+                <label for="image" class="form-label"><strong>Immagine</strong></label>
+                <input type="file" class="form-control @error('image') is-invalid @enderror" name="image" id="image"
+                  value="{{old('image', $apartment->image)}}">
+                @error('image')
+                  <div class="invalid-feedback">
+                    {{ $message }}
+                  </div>
+                @enderror
+              </div>
+              <div class="col">
                     <label for="address" class="form-label"><strong>Indirizzo</strong></label>
                     <input type="text" class="form-control @error('address') is-invalid @enderror" name="address" id="address" placeholder="Indirizzo dell'appartamento"
                       value="{{old('address', $apartment->address)}}">
@@ -104,19 +111,31 @@
                 </div>
             </div>
 
-            <div class="row row-cols-2">
+            <div class="row row-cols-2 justify-content-between">
               <div class="col">
-                <div>
-                  <img src="{{$apartment->getImage()}}" class="w-25" id="image-preview" alt=""></div>
+                <div class="ms-3 preview">
+                  <img src="{{$apartment->getImage()}}" class="" style="width: 90%" id="image-preview" alt="">
                 </div>
               </div>
-              <div class="col-2">
-                <div id="map"></div>
+            <div class="col" >
+                <div id="map" style="width: 90%"></div>
+              </div>
+            </div>
+            
+            <div class="row">
+              <div class="col m-3">
+                <label for="description" class="form-label"><strong>Descrizione</strong></label>
+                <textarea name="description" class="form-control @error('description') is-invalid @enderror" id="description" rows="2">{{old('description', $apartment->description)}}</textarea>
+                @error('description')
+                  <div class="invalid-feedback">
+                    {{ $message }}
+                  </div>
+                @enderror
               </div>
             </div>
 
-            <div class="row justify-content-between">
-              <div class="col mb-3">
+            <div class="row justify-content-between m-2">
+              <div class="col">
                 <label for="price" class="form-label"><strong>Prezzo per notte</strong></label>
                 <input type="number" class="form-control @error('price') is-invalid @enderror" name="price" id="price"
                   value="{{old('price', $apartment->price)}}">
@@ -183,46 +202,39 @@
                   </div>
                 @enderror
               </div>
-            </div>
-        
+            </div> 
             
-
-            <div class="col mb-3">
-              <label for="description" class="form-label">Descrizione</label>
-              <textarea name="description" class="form-control @error('description') is-invalid @enderror" id="description" rows="2">{{old('description', $apartment->description)}}</textarea>
-              @error('description')
-                <div class="invalid-feedback">
-                  {{ $message }}
+            <div class="row align-items-center ms-2 mb-3">
+              <div class="text-center">
+                <h4>Aggiungi servizi</h4>
+              </div>
+              @foreach ($services as $service)
+                <div class="col-3">
+                  <input type="checkbox" 
+                    id="service-{{ $service->id }}" 
+                    name="services[]" 
+                    value="{{ $service->id }}"
+                    {{-- Se l'id del servizio è l'ultimo compilato dall'utente, oppure se è presente l'array
+                    dei servizi dai checked. Se non c'è l'array dei servizi, indicalo come vuoto --}}
+                    @if(in_array($service->id, old('services', $apartment_services ?? []))) checked @endif
+                    class="form-check-input @error('services') is-invalid @enderror" 
+                    @if (in_array($service->id, old('services', $apartment_services ?? []))) checked @endif
+                  >
+                  <label for="service-{{ $service->id }}">
+                    {{ $service->title }}
+                  </label><br>
                 </div>
-              @enderror
+              @endforeach
+            </div>
+            
+            <div class="d-flex justify-content-center my-3">
+              <input type="hidden" name="longitude" id="longitude" value="{{old('longitude', $apartment->longitude)}}">
+              <input type="hidden" name="latitude" id="latitude" value="{{old('latitude', $apartment->latitude)}}">
+              <button class="btn btn-primary w-25">@if($apartment->id)MODIFICA @else INVIA @endif</button>
             </div>
           </div>
 
-          <div class="row align-items-center ms-2">
-            @foreach ($services as $service)
-              <div class="col-3">
-                <input type="checkbox" 
-                  id="service-{{ $service->id }}" 
-                  name="services[]" 
-                  value="{{ $service->id }}"
-                  {{-- Se l'id del servizio è l'ultimo compilato dall'utente, oppure se è presente l'array
-                  dei servizi dai checked. Se non c'è l'array dei servizi, indicalo come vuoto --}}
-                  @if(in_array($service->id, old('services', $apartment_services ?? []))) checked @endif
-                  class="form-check-input @error('services') is-invalid @enderror" 
-                  @if (in_array($service->id, old('services', $apartment_services ?? []))) checked @endif
-                >
-                <label for="service-{{ $service->id }}">
-                  {{ $service->title }}
-                </label><br>
-              </div>
-            @endforeach
-          </div>
 
-          <div class="d-flex justify-content-center my-3">
-            <input type="hidden" name="longitude" id="longitude" value="{{old('longitude', $apartment->longitude)}}">
-            <input type="hidden" name="latitude" id="latitude" value="{{old('latitude', $apartment->latitude)}}">
-            <button class="btn btn-primary w-25">@if($apartment->id)MODIFICA @else INVIA @endif</button>
-          </div>
         </form>
       </div>
     </div>
