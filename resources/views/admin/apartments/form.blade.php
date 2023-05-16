@@ -9,8 +9,8 @@
 
   <style>
     #map {
-      height: 500px;
-      width: 500px;
+      height: 200px;
+      width: 200px;
       }
   </style>
 @endsection
@@ -67,15 +67,51 @@
                 @enderror
               </div>
 
-              <div class="col mb-3">
-                <label for="address" class="form-label"><strong>Indirizzo</strong></label>
-                <input type="text" class="form-control @error('address') is-invalid @enderror" name="address" id="address" placeholder="Indirizzo dell'appartamento"
-                  value="{{old('address', $apartment->address)}}">
-                @error('address')
+              <div class="col form-check d-flex align-items-center">
+                <input name="visible" class="form-check-input @error('visible') is-invalid @enderror" type="checkbox" value="{{old('visible',$apartment->visible)}}" id="visible[]" @if($apartment->visible) checked @endif>
+                <label class="form-check-label ms-2" for="visible">
+                  Vuoi pubblicare l'appartamento?
+                </label>
+                @error('visible')
                   <div class="invalid-feedback">
                     {{ $message }}
                   </div>
                 @enderror
+              </div>
+            </div>
+
+            <div class="row row-cols-2">
+                <div class="col">
+                  <label for="image" class="form-label"><strong>Immagine</strong></label>
+                  <input type="file" class="form-control @error('image') is-invalid @enderror" name="image" id="image"
+                    value="{{old('image', $apartment->image)}}">
+                  @error('image')
+                    <div class="invalid-feedback">
+                      {{ $message }}
+                    </div>
+                  @enderror
+                </div>
+                <div class="col">
+                    <label for="address" class="form-label"><strong>Indirizzo</strong></label>
+                    <input type="text" class="form-control @error('address') is-invalid @enderror" name="address" id="address" placeholder="Indirizzo dell'appartamento"
+                      value="{{old('address', $apartment->address)}}">
+                    @error('address')
+                      <div class="invalid-feedback">
+                        {{ $message }}
+                      </div>
+                    @enderror
+                  </div>  
+                </div>
+            </div>
+
+            <div class="row row-cols-2">
+              <div class="col">
+                <div>
+                  <img src="{{$apartment->getImage()}}" class="w-25" id="image-preview" alt=""></div>
+                </div>
+              </div>
+              <div class="col-2">
+                <div id="map"></div>
               </div>
             </div>
 
@@ -149,35 +185,7 @@
               </div>
             </div>
         
-            <div class="row">
-              <div class="col mb-3">
-                <label for="image" class="form-label"><strong>Immagine</strong></label>
-                <input type="file" class="form-control @error('image') is-invalid @enderror" name="image" id="image"
-                  value="{{old('image', $apartment->image)}}">
-                @error('image')
-                  <div class="invalid-feedback">
-                    {{ $message }}
-                  </div>
-                @enderror
-                <div class="preview mt-2">
-                  <img src="{{$apartment->getImage()}}" class="w-100" id="image-preview" alt=""></div>
-                </div>
-                <div class="preview mt-2 w-50">
-                  <div id="map" alt=""></div>
-                </div>
-
-              <div class="col form-check d-flex align-items-center">
-                <input name="visible" class="form-check-input @error('visible') is-invalid @enderror" type="checkbox" value="{{old('visible',$apartment->visible)}}" id="visible[]" @if($apartment->visible) checked @endif>
-                <label class="form-check-label ms-2" for="visible">
-                  Vuoi pubblicare l'appartamento?
-                </label>
-                @error('visible')
-                  <div class="invalid-feedback">
-                    {{ $message }}
-                  </div>
-                @enderror
-              </div>
-            </div>
+            
 
             <div class="col mb-3">
               <label for="description" class="form-label">Descrizione</label>
