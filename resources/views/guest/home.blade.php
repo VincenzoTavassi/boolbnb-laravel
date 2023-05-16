@@ -1,10 +1,19 @@
 @extends('layouts.app')
 @section('content')
-  <div class="container jumbotron d-flex flex-column align-items-center justify-content-center text-center">
-    <img class="my-1" src="{{ Vite::asset('resources/img/logo.png') }}" alt="" height="150" width="150">
-    <h1 class="my-1">
-      Laravel 9
-      <span class="fs-6 fw-light text-muted"> - Bootstrap 'n Auth</span>
-    </h1>
-  </div>
+  <div class="container">
+    <h2 class="fs-4 text-secondary my-4">
+        {{ __('Benvenuto!') }}
+    </h2>
+    <div class="row justify-content-center">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">{{ __('Guest User') }}</div>
+
+                <div class="card-body">
+                    {{ __('Benvenuto! Effettua il login per vedere i tuoi appartamenti o registrati.') }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
