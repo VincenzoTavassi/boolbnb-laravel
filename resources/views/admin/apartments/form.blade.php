@@ -26,11 +26,18 @@
 @section('content')
   <div class="container">
     <div class="row justify-content-center">
-      @if (session('message'))
+      <div class="container">
+
+      @if (session('danger'))
+        <div class="alert alert-danger my-3">
+              {{ session('danger') }}
+        </div>
+      @elseif (session('message'))
         <div class="alert alert-success my-3">
           {{ session('message') }}
         </div>
       @endif
+      </div>
 
       @if ($errors->any())
         <div class="alert alert-danger">

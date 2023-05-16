@@ -80,6 +80,11 @@ class ApartmentController extends Controller
      */
     public function edit(Apartment $apartment)
     {
+        $user_id = Auth::id();
+        if ($user_id != $apartment->user_id) {
+            return back()
+                ->with('danger', 'Non sei autorizzato a vedere questo elemento');
+        }
         $services = Service::all();
         $apartment_services = $apartment->services->pluck('id')->toArray();
         return view('admin.apartments.form', compact('apartment', 'services', 'apartment_services'));
