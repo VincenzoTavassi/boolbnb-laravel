@@ -97,7 +97,6 @@
                     {{ $message }}
                   </div>
                 @enderror
-            <div class="valid-feedback">OK!</div>  
             </div>
 
               <div class="col">
@@ -224,6 +223,7 @@
                     id="service-{{ $service->id }}" 
                     name="services[]" 
                     value="{{ $service->id }}"
+                    required
                     {{-- Se l'id del servizio è l'ultimo compilato dall'utente, oppure se è presente l'array
                     dei servizi dai checked. Se non c'è l'array dei servizi, indicalo come vuoto --}}
                     @if(in_array($service->id, old('services', $apartment_services ?? []))) checked @endif
@@ -352,6 +352,32 @@
   })
 })()
 </script>
+<script>
+    // CHECKBOX VALIDATION, RICHIEDI ALMENO UN CHECKBOX
+    const serviceCheckbox = document.querySelectorAll("[id^='service-']");
+    let checkedBoxes = false;
+      serviceCheckbox.forEach(service => {
+        service.addEventListener('change', () => {
+      for (let i = 0; i < serviceCheckbox.length; i++) {
+          const checkBox = serviceCheckbox[i]
+          if (checkBox.checked == true) {
+            checkedBoxes = true;
+            break;
+          } else checkedBoxes = false;
+        }
+          if(checkedBoxes) {
+            serviceCheckbox.forEach(service => { 
+              service.required = false;
+            })
+          } else {
+            serviceCheckbox.forEach(service =>{
+              service.required = true;
+            })
+          }
+        })
+      })
+    
+    </script>
 
 <script src="https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.18.0/maps/maps-web.min.js"></script>
 @endsection
