@@ -141,9 +141,9 @@
                 <div id="map" style="width: 90%"></div>
               </div>
             </div>
-            
+
             <div class="row m-0">
-              <div class="col">
+              <div class="col mt-4">
                 <label for="description" class="form-label"><strong>Descrizione</strong></label>
                 <textarea name="description" class="form-control @error('description') is-invalid @enderror" id="description" rows="2">{{old('description', $apartment->description)}}</textarea>
                 @error('description')
@@ -155,7 +155,7 @@
               <div class="valid-feedback">OK!</div>
             </div>
 
-            <div class="row justify-content-between my-2 mx-0">
+            <div class="row justify-content-between mt-4 mx-0">
               <div class="col">
                 <label for="price" class="form-label"><strong>Prezzo per notte</strong></label>
                 <input type="number" class="form-control @error('price') is-invalid @enderror" name="price" id="price"
@@ -232,7 +232,7 @@
             </div> 
             
             <div class="row align-items-center ms-2 mb-3">
-              <div class="text-center">
+              <div class="text-center my-3">
                 <h4>Aggiungi servizi</h4>
               </div>
               @foreach ($services as $service)
@@ -249,6 +249,7 @@
                     @if (in_array($service->id, old('services', $apartment_services ?? []))) checked @endif
                   >
                   <label for="service-{{ $service->id }}">
+                    <i class="mx-2 bi {!! $service->icon !!}"></i>
                     {{ $service->title }}
                   </label><br>
                 </div>
@@ -258,7 +259,7 @@
             <div class="d-flex justify-content-center my-3">
               <input type="hidden" name="longitude" id="longitude" value="{{old('longitude', $apartment->longitude)}}">
               <input type="hidden" name="latitude" id="latitude" value="{{old('latitude', $apartment->latitude)}}">
-              <button class="btn btn-primary w-25">@if($apartment->id)MODIFICA @else INVIA @endif</button>
+              <button class="btn btn-primary w-25">@if($apartment->id)Modifica @else Crea @endif</button>
             </div>
           </div>
 
