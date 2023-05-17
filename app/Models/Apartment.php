@@ -41,6 +41,8 @@ class Apartment extends Model
 
     public function getImage()
     {
-        return $this->image ? asset('storage/' . $this->image) : 'https://t3.ftcdn.net/jpg/02/48/42/64/360_F_248426448_NVKLywWqArG2ADUxDq6QprtIzsF82dMF.jpg';
+        if ($this->image) {
+            return str_contains($this->image, 'http') ? $this->image : asset('storage/' . $this->image);
+        } else return 'https://t3.ftcdn.net/jpg/02/48/42/64/360_F_248426448_NVKLywWqArG2ADUxDq6QprtIzsF82dMF.jpg';
     }
 }
