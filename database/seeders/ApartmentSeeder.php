@@ -16,6 +16,33 @@ class ApartmentSeeder extends Seeder
      */
     public function run(Faker $faker)
     {
+        $coordinates = [
+            //roma
+             [ 41.9028, 12.4964 ],
+             [ 41.8919, 12.5113 ],
+             [ 41.8976, 12.4901 ],
+             [ 41.9097, 12.4763 ],
+             [ 41.9073, 12.4713 ],
+            //milano
+             [ 45.4642, 9.1900 ],
+             [ 45.4732, 9.1715 ],
+             [ 45.8976, 9.1963 ],
+             [ 45.9073, 9.1771 ],
+             [ 45.9028, 9.1893 ],
+            //napoli
+             [ 40.8522, 14.2681 ],
+             [ 40.8392, 14.2500 ],
+             [ 40.8526, 14.2686 ],
+             [ 40.8414, 14.2645 ],
+             [ 40.8453, 14.2529 ],
+            //venezia
+             [ 45.4342, 12.3386 ],
+             [ 45.4375, 12.3346 ],
+             [ 45.4322, 12.3395 ],
+             [ 45.4360, 12.3368 ],
+             [ 45.4339, 12.3355 ],
+        ];
+        
         for ($i = 0; $i < 20; $i++) {
             $apartment = new Apartment;
             $apartment->title = 'Appartamento in ' . $faker->city();
@@ -28,8 +55,8 @@ class ApartmentSeeder extends Seeder
             $apartment->square_meters = $faker->numberBetween(100, 400);
             $apartment->rooms = $faker->numberBetween(1, 4);
             $apartment->address = $faker->streetAddress();
-            $apartment->latitude = $faker->latitude();
-            $apartment->longitude = $faker->longitude(2);
+            $apartment->latitude = $coordinates[$i][0];
+            $apartment->longitude = $coordinates[$i][1];
             $apartment->visible = $faker->boolean();
             $number = $faker->numberBetween(1, 15);
             $apartment->user_id = $number;
