@@ -13,11 +13,14 @@
       width: 100%;
       }
     .preview{
-      min-height: 300px;
-      min-width: 300px;
+     text-align: center;
+    }
+    #image-preview {
+      max-width: 100%;
+      max-height: 300px;
     }
     .pub{
-      padding-left: 12px !important;
+      /* padding-left: 12px !important; */
     }
     #search-results {
       position: absolute;
@@ -91,8 +94,8 @@
                 <div class="valid-feedback">OK!</div>
               </div>
 
-              <div class="col form-check d-flex align-items-center pub">
-                <input name="visible" class="form-check-input m-0 @error('visible') is-invalid @enderror" type="checkbox" value="{{old('visible',$apartment->visible)}}" id="visible[]" @if($apartment->visible) checked @endif>
+              <div class="col d-flex align-items-center">
+                <input name="visible" class="form-check-input m-0 @error('visible') is-invalid @enderror" type="checkbox" value="{{old('visible', $apartment->visible)}}" id="visible[]" @if($apartment->visible) checked @endif>
                 <label class="form-check-label ms-2" for="visible">
                   Vuoi pubblicare l'appartamento?
                 </label>
@@ -108,13 +111,13 @@
               <div class="col">
                 <label for="image" class="form-label"><strong>Immagine</strong></label>
                 <input type="file" class="form-control @error('image') is-invalid @enderror" name="image" id="image"
-                  value="{{old('image', $apartment->image)}}">
+                  value="{{old('image')}}">
                 @error('image')
                   <div class="invalid-feedback">
                     {{ $message }}
                   </div>
                 @enderror
-            </div>
+              </div>
 
               <div class="col position-relative">
                 <div id="search-results" class="d-none">
@@ -128,34 +131,39 @@
                       </div>
                     @enderror
                   </div>  
-                </div>
+              </div>
             </div>
 
-            <div class="row row-cols-2 justify-content-between">
-              <div class="col">
-                <div class="ms-3 preview">
-                  <img src="{{$apartment->getImage()}}" class="" style="width: 90%" id="image-preview" alt="">
+            <div class="container">
+              <div class="row row-cols-2">
+                <div class="col">
+                  <div class="preview">
+                    <img src="{{$apartment->getImage()}}" class="" id="image-preview" alt="">
+                  </div>
                 </div>
-              </div>
-            <div class="col" >
-                <div id="map" style="width: 90%"></div>
+                <div class="col d-flex justify-content-center" >
+                  <div id="map"></div>
+                </div>
               </div>
             </div>
             
-            <div class="row m-0">
-              <div class="col">
-                <label for="description" class="form-label"><strong>Descrizione</strong></label>
-                <textarea name="description" class="form-control @error('description') is-invalid @enderror" id="description" rows="2">{{old('description', $apartment->description)}}</textarea>
-                @error('description')
+            <div class="container">
+              <div class="row">
+                <div class="col">
+                  <label for="description" class="form-label"><strong>Descrizione</strong></label>
+                  <textarea name="description" class="form-control @error('description') is-invalid @enderror" id="description" rows="2">{{old('description', $apartment->description)}}</textarea>
+                  @error('description')
                   <div class="invalid-feedback">
                     {{ $message }}
                   </div>
-                @enderror
+                  @enderror
+                </div>
+                <div class="valid-feedback">OK!</div>
               </div>
-              <div class="valid-feedback">OK!</div>
             </div>
 
-            <div class="row justify-content-between my-2 mx-0">
+            <div class="container">
+            <div class="row justify-content-between my-2">
               <div class="col">
                 <label for="price" class="form-label"><strong>Prezzo per notte</strong></label>
                 <input type="number" class="form-control @error('price') is-invalid @enderror" name="price" id="price"
@@ -229,8 +237,10 @@
                 @enderror
                 <div class="valid-feedback">OK!</div>
               </div>
-            </div> 
-            
+            </div>
+         </div>
+ 
+          <div class="container">
             <div class="row align-items-center ms-2 mb-3">
               <div class="text-center">
                 <h4>Aggiungi servizi</h4>
@@ -254,6 +264,7 @@
                 </div>
               @endforeach
             </div>
+          </div>
             
             <div class="d-flex justify-content-center my-3">
               <input type="hidden" name="longitude" id="longitude" value="{{old('longitude', $apartment->longitude)}}">
@@ -277,33 +288,10 @@
   const searchResultsEl = document.getElementById('search-results');
   const form = document.querySelector('#apartment-form')
 
-
   document.addEventListener("DOMContentLoaded", function() {
     // Se c'è già un indirizzo, invia alla funzione le coordinate
     if(addressEl.value) setMapCenter(latitudeEl.value, longitudeEl.value);
     else setMapCenter(41.862175027654935, 12.468740017291827, 3); // Altrimenti posizionati su Roma, zoom 3
-
-    // Se l'indirizzo cambia, esegui la funzione con le nuove coordinate
-    // addressEl.addEventListener("focusout", () => {
-    //   let addressValue = addressEl.value;
-    // delete axios.defaults.headers.common['X-Requested-With'] // Rimuovi il field per i CORS di TomTom
-    // const response = axios.get(`https://api.tomtom.com/search/2/geocode/${addressValue}.json`, {
-    //   headers: {
-    //     },
-    //   params: {
-    //     key: 'tg2x9BLlB0yJ4y7Snk5XhTOsnakmpgUO',
-    //     limit: 1,
-    //   }}          
-    //   ).then(response => {
-    //     // console.log(response.data.results)
-    //     const coordinate = response.data.results[0].position;
-    //     const address = response.data.results[0].address.freeformAddress;
-    //     // Parse a float delle coordinate
-    //     longitudeEl.value = parseFloat(coordinate.lon);
-    //     latitudeEl.value = parseFloat(coordinate.lat);
-    //     // Invio le coordinate alla funzione per la mappa
-    //     setMapCenter(latitudeEl.value, longitudeEl.value);
-    // })})
   })   
 </script>
 
@@ -339,7 +327,7 @@ addressEl.addEventListener('keyup', () => {
       headers: {
         },
       params: {
-        key: 'tg2x9BLlB0yJ4y7Snk5XhTOsnakmpgUO',
+        key: 'jnhg5VXkLxfsGIiOxCLf1aNxiWphz9YA',
         limit: 5,
       }}).then(response => {
         possibleAddresses = []; // Reset
@@ -453,25 +441,34 @@ addressEl.addEventListener('keyup', () => {
 <script>
     // CUSTOM CHECKBOX VALIDATION, RICHIEDI ALMENO UN CHECKBOX
     const serviceCheckbox = document.querySelectorAll("[id^='service-']");
+
+    function checkBoxValidation(checkBoxArray) {
     let checkedBoxes = false;
-      serviceCheckbox.forEach(service => {
-        service.addEventListener('change', () => {
-      for (let i = 0; i < serviceCheckbox.length; i++) {
-          const checkBox = serviceCheckbox[i]
+    checkBoxArray.forEach(service => {
+      for (let i = 0; i < checkBoxArray.length; i++) {
+          const checkBox = checkBoxArray[i]
           if (checkBox.checked == true) {
             checkedBoxes = true;
             break;
           } else checkedBoxes = false;
         }
           if(checkedBoxes) {
-            serviceCheckbox.forEach(service => { 
+            checkBoxArray.forEach(service => { 
               service.required = false;
             })
           } else {
-            serviceCheckbox.forEach(service =>{
+            checkBoxArray.forEach(service =>{
               service.required = true;
             })
           }
+        
+      })}
+
+      checkBoxValidation(serviceCheckbox);
+
+      serviceCheckbox.forEach(service => {
+        service.addEventListener('change', () => {
+            checkBoxValidation(serviceCheckbox);
         })
       })
     

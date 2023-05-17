@@ -20,7 +20,7 @@ class ApartmentSeeder extends Seeder
             $apartment = new Apartment;
             $apartment->title = 'Appartamento in ' . $faker->city();
             $apartment->description = $faker->paragraph(3);
-            $apartment->image = 'https://picsum.photos/200/300';
+            $apartment->image = 'https://picsum.photos/500/500';
             $apartment->price = $faker->randomFloat(2, 20, 300);
             $apartment->single_beds = $faker->numberBetween(1, 4);
             $apartment->double_beds = $faker->numberBetween(1, 4);
