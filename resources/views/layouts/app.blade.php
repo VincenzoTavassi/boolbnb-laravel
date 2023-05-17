@@ -23,7 +23,16 @@
   
   <main>
     <!-- JUMBOTRON -->
-    <div class="container m-5">
+    <div class="container">
+      @if (session('danger'))
+        <div class="alert alert-danger my-3">
+              {{ session('danger') }}
+        </div>
+      @elseif (session('message'))
+        <div class="alert alert-success my-3">
+          {{ session('message') }}
+        </div>
+      @endif
     </div>
 
     <div class="container">

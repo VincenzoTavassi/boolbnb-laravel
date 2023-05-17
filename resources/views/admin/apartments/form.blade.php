@@ -26,6 +26,7 @@
       height: 100px;
       background-color: rgba(255, 255, 255, 0.5);
       border: 1px solid gray;
+      border-top: none;
       z-index: 99;
       padding-top: 5px;
       padding-bottom: 5px;
@@ -47,18 +48,6 @@
 @section('content')
   <div class="container">
     <div class="row justify-content-center">
-      <div class="container">
-
-      @if (session('danger'))
-        <div class="alert alert-danger my-3">
-              {{ session('danger') }}
-        </div>
-      @elseif (session('message'))
-        <div class="alert alert-success my-3">
-          {{ session('message') }}
-        </div>
-      @endif
-      </div>
 
       @if ($errors->any())
         <div class="alert alert-danger">
@@ -320,13 +309,32 @@
 <script>
 // CUSTOM SCRIPT PER CERCARE GLI INDIRIZZI MENTRE SI DIGITA E AL CLICK AGGIORNA LA MAPPA
 let addressInputEl = document.getElementById('address')
+let possibleAddresses = [];
+
+// Se l'utente clicca fuori dalla select, la evidenziamo in rosso
+addressEl.addEventListener('blur', () => {
+ searchResultsEl.classList.add('border-danger');
+ searchResultsEl.classList.add('text-danger');
+ addressEl.classList.add('is-invalid');
+ possibleAddresses.forEach(possibleAddress => {
+  if(possibleAddress.indirizzo == addressEl.value) {
+    addressEl.classList.remove('is-invalid');
+  }
+ })
+})
+
 addressEl.addEventListener('keyup', () => {
   // Rimuovo risultati precedenti e resetto l'array
   let previousResults = document.querySelectorAll('.result')
   previousResults.forEach(result => result.remove())
-  let possibleAddresses = [];
+  possibleAddresses = [];
+  addressEl.classList.remove('is-invalid');
+
+  // Rimuovo le classi danger 
+  searchResultsEl.classList.remove('border-danger');
+  searchResultsEl.classList.remove('text-danger');
   // TODO: Se l'utente clicca al di fuori della select, la chiudiamo
- 
+
   // Mostro il div con i risultati
   searchResultsEl.classList.remove('d-none')
   let addressValue = addressEl.value; // input dell'utente
@@ -361,6 +369,8 @@ addressEl.addEventListener('keyup', () => {
             latitudeEl.value = resultAddress.latitude;
             // Invia coordinate alla funzione per aggiornare la mappa
             setMapCenter(latitudeEl.value, longitudeEl.value);
+            addressEl.classList.remove('is-invalid');
+
           })
           searchResultsEl.append(resultDiv);
         }
