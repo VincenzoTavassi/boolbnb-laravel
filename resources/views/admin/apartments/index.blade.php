@@ -3,7 +3,8 @@
 @section('content')
 <div class="container">
     <h1 class="text-center">Lista Appartamenti</h1>
-    <a href="{{ route('apartments.create') }}" class="btn btn-primary my-3">Crea annuncio</a>
+    <a href="{{ route('apartments.create') }}" class="btn btn-outline-primary m-3">Crea annuncio</a>
+    <a href="{{ route('admin.apartments.trash') }}" class="btn btn-outline-primary my-3">Vai a cestino</a>
     <table class="table table-striped">
         <thead>
             <tr>
@@ -55,8 +56,8 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          Attenzione! Stai eliminando questo appartamento<br>
-          Sei sicuro di volerlo eliminare?
+          Attenzione! Stai spostando questo appartamento nel cestino<br>
+          Sei sicuro di volerlo spostare?
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>

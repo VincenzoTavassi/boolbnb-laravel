@@ -1,5 +1,9 @@
 @import "./partials/bootstrap_loader.scss";
 
+body {
+    background-color: rgb(244, 244, 244);
+}
+
 main {
     min-height: 100vh;
     padding-top: 70px;
@@ -7,10 +11,6 @@ main {
 
 .jumbotron {
     min-height: calc(100vh - 70px);
-}
-
-.navbar {
-    background-color: #D92525;
 }
 
 .trash {

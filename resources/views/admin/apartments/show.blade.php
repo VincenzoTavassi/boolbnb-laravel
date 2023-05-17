@@ -5,8 +5,8 @@
 @section('content')
 <div class="container">
     <div class="my-4">
-        <a class="btn btn-primary me-2" href="{{ route('apartments.index') }}">Torna alla lista</a>
-        <a class="btn btn-primary" href="{{ route('apartments.edit', $apartment) }}">Modifica annuncio</a>
+        <a class="btn btn-outline-primary me-3" href="{{ route('apartments.index') }}">Torna alla lista</a>
+        <a class="btn btn-outline-primary" href="{{ route('apartments.edit', $apartment) }}">Modifica annuncio</a>
     </div>
 
     <div class="card">
