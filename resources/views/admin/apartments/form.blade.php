@@ -65,11 +65,11 @@
         <div class="card container">
             <!-- EDIT -->
             @if($apartment->id)
-              <form action="{{route('apartments.update', $apartment)}}" method="post" class="row needs-validation" novalidate enctype="multipart/form-data">
+              <form id="apartment-form" action="{{route('apartments.update', $apartment)}}" method="post" class="row needs-validation" novalidate enctype="multipart/form-data">
             @method('put')
             <!-- CREATE -->
             @else
-              <form action="{{route('apartments.store')}}" method="post" class="row needs-validation" novalidate enctype="multipart/form-data">
+              <form id="apartment-form" action="{{route('apartments.store')}}" method="post" class="row needs-validation" novalidate enctype="multipart/form-data">
             @endif
             @csrf
             
@@ -127,7 +127,6 @@
                         {{ $message }}
                       </div>
                     @enderror
-                    <div class="valid-feedback">OK!</div>
                   </div>  
                 </div>
             </div>
@@ -270,12 +269,14 @@
   </div>
   
 <!-- SCRIPT -->
-<script type='text/javascript' defer>
+<script>
   // ELEMENTI HTML
   const addressEl = document.getElementById('address');
   const longitudeEl = document.getElementById('longitude');
   const latitudeEl = document.getElementById('latitude');
   const searchResultsEl = document.getElementById('search-results');
+  const form = document.querySelector('#apartment-form')
+
 
   document.addEventListener("DOMContentLoaded", function() {
     // Se c'è già un indirizzo, invia alla funzione le coordinate
@@ -311,24 +312,19 @@
 let addressInputEl = document.getElementById('address')
 let possibleAddresses = [];
 
-// Se l'utente clicca fuori dalla select, la evidenziamo in rosso
+// Se l'utente clicca fuori dalla select, la rendiamo invalida
 addressEl.addEventListener('blur', () => {
  searchResultsEl.classList.add('border-danger');
  searchResultsEl.classList.add('text-danger');
  addressEl.classList.add('is-invalid');
- possibleAddresses.forEach(possibleAddress => {
-  if(possibleAddress.indirizzo == addressEl.value) {
-    addressEl.classList.remove('is-invalid');
-  }
- })
+ form.classList.remove('was-validated');
 })
 
 addressEl.addEventListener('keyup', () => {
-  // Rimuovo risultati precedenti e resetto l'array
-  let previousResults = document.querySelectorAll('.result')
+  // Rimuovo risultati precedenti
+  const previousResults = document.querySelectorAll('.result')
   previousResults.forEach(result => result.remove())
-  possibleAddresses = [];
-  addressEl.classList.remove('is-invalid');
+  addressEl.classList.remove('is-invalid'); // Aggiorno validazione
 
   // Rimuovo le classi danger 
   searchResultsEl.classList.remove('border-danger');
@@ -346,6 +342,7 @@ addressEl.addEventListener('keyup', () => {
         key: 'tg2x9BLlB0yJ4y7Snk5XhTOsnakmpgUO',
         limit: 5,
       }}).then(response => {
+        possibleAddresses = []; // Reset
         response.data.results.forEach(risultato => {
           possibleAddresses.push({   // Inserisco indirizzo e coordinate nell'array
             indirizzo: risultato.address.freeformAddress,
@@ -361,14 +358,15 @@ addressEl.addEventListener('keyup', () => {
           let resultDiv = document.createElement('div');
           resultDiv.classList.add("result")
           resultDiv.innerHTML += resultAddress.indirizzo;
-          resultDiv.addEventListener('click', () => {
-            addressInputEl.value = resultAddress.indirizzo;
-            searchResultsEl.classList.add('d-none')
+          resultDiv.addEventListener('click', () => { 
+            addressInputEl.value = resultAddress.indirizzo; // Inserisco nell'input l'indirizzo scelto dall'utente
+            searchResultsEl.classList.add('d-none') // Chiudo il div
             // Aggiorno gli hidden fields
             longitudeEl.value = resultAddress.longitude;
             latitudeEl.value = resultAddress.latitude;
             // Invia coordinate alla funzione per aggiornare la mappa
             setMapCenter(latitudeEl.value, longitudeEl.value);
+            // L'indirizzo ora è valido
             addressEl.classList.remove('is-invalid');
 
           })
@@ -402,7 +400,8 @@ addressEl.addEventListener('keyup', () => {
       right: [-25, -35],
     }
 
-    var popup = new tt.Popup({ offset: popupOffsets }).setHTML(apartmentTitle.value)
+    let markerTitle = apartmentTitle.value ? apartmentTitle.value : 'Dove sarà il tuo appartamento?'
+    var popup = new tt.Popup({ offset: popupOffsets }).setHTML(markerTitle)
     marker.setPopup(popup).togglePopup()
   }
 </script>
@@ -425,7 +424,8 @@ addressEl.addEventListener('keyup', () => {
     })
 </script>
 <script>
-    // BOOTSTRAP FORM VALIDATION 
+    // !! ATTENZIONE MODIFICHE CUSTOM !! 
+    //BOOTSTRAP FORM VALIDATION 
     (() => {
   'use strict'
 
@@ -435,13 +435,18 @@ addressEl.addEventListener('keyup', () => {
   // Loop over them and prevent submission
   Array.from(forms).forEach(form => {
     form.addEventListener('submit', event => {
+      if(addressEl.classList.contains('is-invalid')) { // Modifica custom per la validazione indirizzo
+        event.preventDefault()
+        event.stopPropagation()
+        form.classList.remove('was-validated') // Se l'indirizzo non è valido, non puoi proseguire
+        window.scrollTo({ top: 0, behavior: 'smooth' }); 
+        } else {
       if (!form.checkValidity()) {
         event.preventDefault()
         event.stopPropagation()
       }
-
       form.classList.add('was-validated')
-    }, false)
+  }}, false)
   })
 })()
 </script>
