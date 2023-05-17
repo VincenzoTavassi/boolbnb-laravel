@@ -29,6 +29,11 @@ Route::middleware('auth')
     ->name('admin.')    // * routes name start with "admin." 
     ->group(
         function () {
+            // # Soft-delete and trash for projects
+            Route::get('/apartments/trash', [ApartmentController::class, 'trash'])->name('apartments.trash');
+            Route::put('/apartments/{apartment}/restore', [ApartmentController::class, 'restore'])->name('apartments.restore');
+            Route::delete('/apartments/{apartment}/forcedelete', [ApartmentController::class, 'forcedelete'])->name('apartments.forcedelete');
+            // # Apartments resource
             Route::get('/dashboard',   [AdminHomeController::class,    'dashboard'])->name('dashboard');
         }
     );

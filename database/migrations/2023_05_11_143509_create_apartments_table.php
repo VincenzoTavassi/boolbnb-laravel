@@ -28,6 +28,7 @@ return new class extends Migration
             $table->double('latitude', 10, 8);
             $table->double('longitude', 11, 8);
             $table->boolean('visible');
+            $table->softDeletes();
             $table->timestamps();
 
             $table->foreignId('user_id')

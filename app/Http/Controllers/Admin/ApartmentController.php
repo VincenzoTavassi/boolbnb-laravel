@@ -69,7 +69,8 @@ class ApartmentController extends Controller
      */
     public function show(Apartment $apartment)
     {
-        //
+        $services = Service::all();
+        return view('admin.apartments.show', compact('apartment', 'services'));
     }
 
     /**
@@ -119,11 +120,48 @@ class ApartmentController extends Controller
      */
     public function destroy(Apartment $apartment)
     {
-        //
+        $apartment->delete();
+        return redirect()->route('apartments.index');
     }
 
-    ## FUNCTIONS
+    ## FUNCTIONS TRASHED RESOURCE.
+    public function trash(Request $request)
+    {
+        $apartments = Apartment::onlyTrashed()->get();
 
+        return view('admin.apartments.trash', compact('apartments'));
+    }
+
+    /**
+     * Force-delete the specified resource from storage.
+     *
+     * @param  \App\Models\Apartment  $apartment
+     * @return \Illuminate\Http\Response
+     */
+    public function forceDelete(int $id)
+    {
+        $apartment = Apartment::where('id', $id)->onlyTrashed()->first();
+
+        if ($apartment->image) Storage::delete($apartment->delete());
+        $apartment->forcedelete();
+        return redirect()->route('admin.apartments.trash');
+    }
+
+    /**
+     * Restore the specified resource from storage.
+     *
+     * @param  \App\Models\Project  $project
+     * @return \Illuminate\Http\Response
+     */
+    public function restore(int $id)
+    {
+        $apartment = Apartment::where('id', $id)->onlyTrashed()->first();
+        $apartment->restore();
+
+        return to_route('apartments.index');
+    }
+
+    ## VALIDATION
     private function validation($data)
     {
 
