@@ -126,6 +126,12 @@ class ApartmentController extends Controller
     public function destroy(Apartment $apartment)
     {
         $apartment->delete();
+
+        $user_id = Auth::id();
+        if ($user_id != $apartment->user_id) {
+            return back()
+                ->with('danger', 'Non sei autorizzato a vedere questo elemento');
+        }
         return redirect()->route('apartments.index');
     }
 
