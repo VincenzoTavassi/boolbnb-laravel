@@ -1,7 +1,7 @@
 <nav class="navbar fixed-top navbar-expand-md bg-light">
     <div class="container ">
-      <a class="navbar-brand d-flex align-items-center" href="{{ route('homepage') }}">
-        <h3 class="text-danger mb-1">BoolBnB</h3>
+      <a class="navbar-brand d-flex align-items-center" href="http://localhost:5174">
+      <h3 class="text-danger mb-1">BoolBnB</h3>
       </a>
 
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
@@ -13,6 +13,9 @@
         <!-- Left Side Of Navbar -->
         @auth
         <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+          <a class="nav-link text-dark" href="{{ route('homepage') }}">Back Office</a>
+          </li>
           <li class="nav-item">
             <a class="nav-link text-dark" href="{{ route('apartments.index') }}">{{ __('Lista') }}</a>
           </li>
