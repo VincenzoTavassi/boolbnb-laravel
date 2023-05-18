@@ -46,9 +46,26 @@ class ApartmentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    // public function advancedSearch($latitude, $longitude, $distance)
-    // {
+    public function advancedSearch($latitude, $longitude, $distance, $unit = 'kilometers')
+    {
+        $apartments_inside_circle = [];
+        $apartments = Apartment::where('visible', '=', 1)->get();
+        foreach ($apartments as $apartment) {
+            $theta = $longitude - $apartment->longitude;
+            $distanceBetween = (sin(deg2rad($latitude)) * sin(deg2rad($apartment->latitude))) + (cos(deg2rad($latitude)) * cos(deg2rad($apartment->latitude)) * cos(deg2rad($theta)));
+            $distanceBetween = acos($distanceBetween);
+            $distanceBetween = rad2deg($distanceBetween);
+            $distanceBetween = $distanceBetween * 60 * 1.1515;
+            switch ($unit) {
+                case 'miles':
+                    break;
+                case 'kilometers':
+                    $distanceBetween = $distanceBetween * 1.609344;
+            }
+            if ($distanceBetween <= $distance) $apartments_inside_circle[] = $apartment;
+            $distanceBetween = 0;
+        }
 
-    //     return response()->json($apartment);
-    // }
+        return response()->json($apartments_inside_circle);
+    }
 }
