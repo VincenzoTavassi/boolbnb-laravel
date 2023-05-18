@@ -58,7 +58,7 @@ class ApartmentController extends Controller
         else $apartment->visible = 0;
         $apartment->save();
         $apartment->services()->attach($data['services']);
-        return to_route('apartments.create')->with('message', 'Appartamento creato con successo');
+        return to_route('apartments.show', compact('apartment'))->with('message', 'Appartamento creato con successo');
     }
 
     /**
@@ -69,7 +69,14 @@ class ApartmentController extends Controller
      */
     public function show(Apartment $apartment)
     {
+        $user_id = Auth::id();
+        if ($user_id != $apartment->user_id) {
+            return back()
+                ->with('danger', 'Non sei autorizzato a vedere questo elemento');
+        }
+
         $services = Service::all();
+
         return view('admin.apartments.show', compact('apartment', 'services'));
     }
 
@@ -126,13 +133,14 @@ class ApartmentController extends Controller
      */
     public function destroy(Apartment $apartment)
     {
-        $apartment->delete();
-
         $user_id = Auth::id();
         if ($user_id != $apartment->user_id) {
             return back()
                 ->with('danger', 'Non sei autorizzato a vedere questo elemento');
         }
+
+        $apartment->delete();
+
         return redirect()->route('apartments.index');
     }
 

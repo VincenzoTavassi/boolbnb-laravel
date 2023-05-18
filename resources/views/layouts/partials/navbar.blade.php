@@ -11,6 +11,7 @@
 
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <!-- Left Side Of Navbar -->
+        @auth
         <ul class="navbar-nav me-auto">
           <li class="nav-item">
             <a class="nav-link text-dark" href="{{ route('apartments.index') }}">{{ __('Lista') }}</a>
@@ -18,6 +19,7 @@
           <li class="nav-item">
             <a class="nav-link text-dark" href="{{ route('apartments.create') }}">{{ __('Crea annuncio') }}</a>
           </li>
+        @endauth
         </ul>
 
         <!-- Right Side Of Navbar -->
