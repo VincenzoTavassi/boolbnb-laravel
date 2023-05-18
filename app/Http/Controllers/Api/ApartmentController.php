@@ -19,7 +19,7 @@ class ApartmentController extends Controller
     public function index()
     {
         $apartments = Apartment::where('visible', '=', 1)
-            ->with('plans')
+            ->with('plans', 'services')
             ->paginate(12);
         foreach ($apartments as $apartment) {
             $apartment->image = $apartment->getImage();
