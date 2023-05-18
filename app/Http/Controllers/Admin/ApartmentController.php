@@ -147,8 +147,8 @@ class ApartmentController extends Controller
     ## FUNCTIONS TRASHED RESOURCE.
     public function trash(Request $request)
     {
-        $apartments = Apartment::onlyTrashed()->get();
-
+        $user_id = Auth::id();
+        $apartments = Apartment::where('user_id', '=', $user_id)->onlyTrashed()->get();
         return view('admin.apartments.trash', compact('apartments'));
     }
 
