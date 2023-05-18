@@ -21,6 +21,9 @@ class ApartmentController extends Controller
         $apartments = Apartment::where('visible', '=', 1)
             ->with('plans')
             ->paginate(12);
+        foreach ($apartments as $apartment) {
+            $apartment->image = $apartment->getImage();
+        }
         return response()->json($apartments);
     }
 
@@ -34,6 +37,7 @@ class ApartmentController extends Controller
         $apartment = Apartment::where('id', '=', $id)
             ->with('plans', 'services')
             ->get();
+        $apartment->image = $apartment->getImage();
         return response()->json($apartment);
     }
 
@@ -44,7 +48,7 @@ class ApartmentController extends Controller
      */
     // public function advancedSearch($latitude, $longitude, $distance)
     // {
-        
+
     //     return response()->json($apartment);
     // }
 }
