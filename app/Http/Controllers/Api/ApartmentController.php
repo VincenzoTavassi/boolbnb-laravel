@@ -75,28 +75,40 @@ class ApartmentController extends Controller
 
     /**
      * 
-     * ## Return only sponsored apartments ##
+     * ## RETURN ACTIVE SPONSORED APARTMENTS ONLY ##
+     * Ritorna gli appartamenti con un piano sponsorizzato attualmente attivo.
+     * La lista generata mostrerà gli appartamenti, compresi di servizi. L'array plans 
+     * per ogni appartamento includerà soltanto i piani attualmente in vigore.
      * 
-     */
-    public function getSponsored($plan = null)
+     * Costruzione richiesta: /api/sponsored/{piano}/{max}/{random}
+     *      {piano} = filtra per piano di sponsorizzazione.
+     *                valori: 'all', null, o uno dei piani esistenti (es. 'bronze').
+     *                Per i filtri successivi su tutta la lista è necessario 'all'.
+     *        {max} = solo se presente {piano}, determina il numero massimo di risultati. Se non è indicato, verranno inviati tutti.
+     *     {random} = solo se presenti {piano} (o 'all') e {max}, i risultati forniti da max saranno random.
+     * 
+     * */
+    public function getSponsored($plan = null, $max = null, $random = false)
     {
-        if ($plan && !Plan::where('title', $plan)->exists())
+        // Se il piano non è null ma la parola indicata non è all o non esiste
+        if ($plan && !Plan::where('title', $plan)->exists() && $plan != 'all')
             return response()->json(['error' => 'Il piano specificato non esiste'], 404);
 
-        $currentDate = Carbon::now()->toDateString();
-        $apartments = Apartment::where('visible', '=', '1')
-            ->whereHas(
-                'plans',
-                function ($query) use ($currentDate, $plan) {
+        $currentDate = Carbon::now()->toDateString(); // Data attuale
+        $query = Apartment::where('visible', '=', '1')
+            ->whereHas('plans', function ($query) use ($currentDate, $plan) {
+                $query->where('end_date', '>', $currentDate); // Filtra per piani attivi
+                if ($plan && $plan != 'all') $query->where('title', $plan); // Se è indicato un piano ed è diverso da all
+            })
+            ->with(['plans' => function ($query) use ($currentDate) {
+                $query->where('end_date', '>', $currentDate); // Mostra solo piani attivi nella lista
+            }])
+            ->with('services');
+        if ($random) $query->inRandomOrder(); // Se è specificato, selezioniamo risultati random
+        if ($max) $query->take($max); // Se è indicato, ottieni il numero di risultati richiesti
+        $query->orderBy('updated_at', 'desc'); // Ordina per ultimo aggiornamento
 
-                    $query->where('end_date', '>', $currentDate);
-                    if ($plan) {
-                        $query->where('title', $plan);
-                    }
-                }
-            )
-            ->with('plans', 'services')
-            ->get();
+        $apartments = $query->get();
         return response()->json($apartments);
     }
 };
