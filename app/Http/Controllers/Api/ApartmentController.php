@@ -118,14 +118,15 @@ class ApartmentController extends Controller
      * ## RETURN STANDARD APARTMENTS ONLY ##
      * Ritorna gli appartamenti senza piani sponsorizzati attualmente attivi.
      * La lista includerà piani e servizi.
-     *  
+     *      * Costruzione richiesta: /api/standard/{max}/{random}
+     *        {max} = determina il numero massimo di risultati. Se non è indicato, verranno inviati tutti.
+     *     {random} = solo se presente {max}, i risultati forniti da max saranno random.
      * */
 
-    public function getStandard()
+    public function getStandard($max = null, $random = false)
     {
         $currentDate = Carbon::now()->toDateTimeString(); // Data attuale
-        return response()->json($currentDate);
-        $apartments = Apartment::where('visible', '=', '1')
+        $query = Apartment::where('visible', '=', '1')
             ->whereDoesntHave('plans') // Appartamenti senza sponsorizzazioni
             ->orWhereHas('plans', function ($query) use ($currentDate) {
                 $query->where('end_date', '<', $currentDate); // Includi sponsorizzazioni scadute
@@ -133,8 +134,11 @@ class ApartmentController extends Controller
             ->whereDoesntHave('plans', function ($query) use ($currentDate) {
                 $query->where('end_date', '>', $currentDate); // Escludiamo sponsorizzazioni attive
             })
-            ->with('plans', 'services')
-            ->get();
+            ->with('plans', 'services');
+        if ($random) $query->inRandomOrder(); // Se è specificato, selezioniamo risultati random
+        if ($max) $query->take($max); // Se è indicato, ottieni il numero di risultati richiesti
+        $query->orderBy('updated_at', 'desc'); // Ordina per ultimo aggiornamento
+        $apartments = $query->get();
 
         return response()->json($apartments);
     }
