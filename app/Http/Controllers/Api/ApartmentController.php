@@ -111,4 +111,28 @@ class ApartmentController extends Controller
         $apartments = $query->get();
         return response()->json($apartments);
     }
+
+
+    /**
+     * 
+     * ## RETURN STANDARD APARTMENTS ONLY ##
+     * Ritorna gli appartamenti senza piani sponsorizzati attualmente attivi.
+     * La lista includerà piani e servizi.
+     *  
+     * */
+
+    public function getStandard()
+    {
+        $currentDate = Carbon::now()->toDateString(); // Data attuale
+        $apartments = Apartment::where('visible', '=', '1')
+            ->where(function ($query) use ($currentDate) {
+                $query->whereDoesntHave('plans') // Ottieni gli appartamenti senza sponsorizzazioni
+                    ->orWhereHas('plans', function ($query) use ($currentDate) {
+                        $query->where('end_date', '<', $currentDate); // O con sponsorizzazione scadute
+                    });
+            })
+            ->with('plans', 'services')
+            ->get();
+        return response()->json($apartments);
+    }
 };
