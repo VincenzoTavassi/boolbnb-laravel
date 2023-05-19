@@ -49,7 +49,7 @@ class ApartmentController extends Controller
     public function advancedSearch($latitude, $longitude, $distance, $unit = 'kilometers')
     {
         $apartments_inside_circle = [];
-        $apartments = Apartment::where('visible', '=', 1)->get();
+        $apartments = Apartment::where('visible', '=', 1)->with('services', 'plans')->get();
         foreach ($apartments as $apartment) {
             $theta = $longitude - $apartment->longitude;
             $distanceBetween = (sin(deg2rad($latitude)) * sin(deg2rad($apartment->latitude))) + (cos(deg2rad($latitude)) * cos(deg2rad($apartment->latitude)) * cos(deg2rad($theta)));
