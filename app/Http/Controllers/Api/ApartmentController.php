@@ -7,7 +7,10 @@ use Illuminate\Http\Request;
 
 // importo i model da utilizzare nelle richieste
 use App\Models\Apartment;
+use App\Models\Plan;
 use App\Models\Service;
+use Carbon\Carbon;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 
 class ApartmentController extends Controller
 {
@@ -68,4 +71,32 @@ class ApartmentController extends Controller
 
         return response()->json($apartments_inside_circle);
     }
-}
+
+
+    /**
+     * 
+     * ## Return only sponsored apartments ##
+     * 
+     */
+    public function getSponsored($plan = null)
+    {
+        if ($plan && !Plan::where('title', $plan)->exists())
+            return response()->json(['error' => 'Il piano specificato non esiste'], 404);
+
+        $currentDate = Carbon::now()->toDateString();
+        $apartments = Apartment::where('visible', '=', '1')
+            ->whereHas(
+                'plans',
+                function ($query) use ($currentDate, $plan) {
+
+                    $query->where('end_date', '>', $currentDate);
+                    if ($plan) {
+                        $query->where('title', $plan);
+                    }
+                }
+            )
+            ->with('plans', 'services')
+            ->get();
+        return response()->json($apartments);
+    }
+};
