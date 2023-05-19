@@ -36,7 +36,7 @@ class ApartmentController extends Controller
     {
         $apartment = Apartment::where('id', '=', $id)
             ->with('plans', 'services')
-            ->get();
+            ->first();
         $apartment->image = $apartment->getImage();
         return response()->json($apartment);
     }
