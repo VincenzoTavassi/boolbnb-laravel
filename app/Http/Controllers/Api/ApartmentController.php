@@ -94,7 +94,7 @@ class ApartmentController extends Controller
         if ($plan && !Plan::where('title', $plan)->exists() && $plan != 'all')
             return response()->json(['error' => 'Il piano specificato non esiste'], 404);
 
-        $currentDate = Carbon::now()->toDateString(); // Data attuale
+        $currentDate = Carbon::now()->toDateTimeString(); // Data attuale
         $query = Apartment::where('visible', '=', '1')
             ->whereHas('plans', function ($query) use ($currentDate, $plan) {
                 $query->where('end_date', '>', $currentDate); // Filtra per piani attivi
@@ -123,7 +123,8 @@ class ApartmentController extends Controller
 
     public function getStandard()
     {
-        $currentDate = Carbon::now()->toDateString(); // Data attuale
+        $currentDate = Carbon::now()->toDateTimeString(); // Data attuale
+        return response()->json($currentDate);
         $apartments = Apartment::where('visible', '=', '1')
             ->whereDoesntHave('plans') // Appartamenti senza sponsorizzazioni
             ->orWhereHas('plans', function ($query) use ($currentDate) {
