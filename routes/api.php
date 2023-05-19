@@ -26,3 +26,4 @@ Route::apiResource('/apartments', ApartmentController::class);
 Route::get('/apartments/{lat}/{lon}/{distance}', [ApartmentController::class, 'advancedSearch'])->name('advancedSearch');
 
 Route::get('/sponsored/{plan?}/{max?}/{random?}', [ApartmentController::class, 'getSponsored']);
+Route::get('/standard', [ApartmentController::class, 'getStandard']);

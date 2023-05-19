@@ -125,14 +125,16 @@ class ApartmentController extends Controller
     {
         $currentDate = Carbon::now()->toDateString(); // Data attuale
         $apartments = Apartment::where('visible', '=', '1')
-            ->where(function ($query) use ($currentDate) {
-                $query->whereDoesntHave('plans') // Ottieni gli appartamenti senza sponsorizzazioni
-                    ->orWhereHas('plans', function ($query) use ($currentDate) {
-                        $query->where('end_date', '<', $currentDate); // O con sponsorizzazione scadute
-                    });
+            ->whereDoesntHave('plans') // Appartamenti senza sponsorizzazioni
+            ->orWhereHas('plans', function ($query) use ($currentDate) {
+                $query->where('end_date', '<', $currentDate); // Includi sponsorizzazioni scadute
+            })
+            ->whereDoesntHave('plans', function ($query) use ($currentDate) {
+                $query->where('end_date', '>', $currentDate); // Escludiamo sponsorizzazioni attive
             })
             ->with('plans', 'services')
             ->get();
+
         return response()->json($apartments);
     }
 };
