@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\ApartmentController;
+use App\Http\Controllers\Admin\MessageController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\HomeController as AdminHomeController;
 use App\Http\Controllers\Guest\HomeController as GuestHomeController;
@@ -19,6 +20,10 @@ use Illuminate\Support\Facades\Route;
 
 // # Admin/Apartment Owner routes
 Route::resource('apartments', ApartmentController::class)->middleware('auth');
+// # Admin/Messages Owner routes
+Route::resource('messages', MessageController::class)->middleware('auth')->except([
+    'create', 'show'
+]);;
 
 // # Guest route
 Route::get('/',    [GuestHomeController::class,    'homepage'])->name('homepage');
@@ -33,6 +38,12 @@ Route::middleware('auth')
             Route::get('/apartments/trash', [ApartmentController::class, 'trash'])->name('apartments.trash');
             Route::put('/apartments/{apartment}/restore', [ApartmentController::class, 'restore'])->name('apartments.restore');
             Route::delete('/apartments/{apartment}/forcedelete', [ApartmentController::class, 'forcedelete'])->name('apartments.forcedelete');
+            // # Soft-delete and trash for messages
+            Route::get('/messages/trash', [MessageController::class, 'trash'])->name('messages.trash');
+            Route::put('/messages/{message}/restore', [MessageController::class, 'restore'])->name('messages.restore');
+            Route::delete('/messages/{message}/forcedelete', [MessageController::class, 'forcedelete'])->name('messages.forcedelete');
+            // # Personal show for messages
+            Route::get('/messages/{apartment}/{message}', [MessageController::class, 'show'])->name('messages.show');
             // # Apartments resource
             Route::get('/dashboard',   [AdminHomeController::class,    'dashboard'])->name('dashboard');
         }

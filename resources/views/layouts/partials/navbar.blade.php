@@ -17,6 +17,9 @@
             <a class="nav-link text-dark" href="{{ route('apartments.index') }}">{{ __('Lista') }}</a>
           </li>
           <li class="nav-item">
+            <a class="nav-link text-dark" href="{{ route('messages.index') }}">{{ __('Lista messaggi') }}</a>
+          </li>
+          <li class="nav-item">
             <a class="nav-link text-dark" href="{{ route('apartments.create') }}">{{ __('Crea annuncio') }}</a>
           </li>
         @endauth
