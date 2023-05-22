@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('email', 100);
             $table->string('name', 50);
             $table->text('text');
+            $table->softDeletes();
             $table->timestamps();
 
             $table->foreignId('apartment_id')

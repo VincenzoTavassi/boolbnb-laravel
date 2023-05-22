@@ -52,7 +52,7 @@ class MessageController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Apartment $apartment,Message $message)
+    public function show(Apartment $apartment, Message $message)
     {
         $user_id = Auth::id();
         if ($user_id != $apartment->user_id) {
@@ -63,28 +63,7 @@ class MessageController extends Controller
         return view('admin.messages.show', compact('apartment', 'message'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
+    
 
     /**
      * Remove the specified resource from storage.
@@ -92,7 +71,7 @@ class MessageController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Message $message)
+    public function destroy(Apartment $apartment, Message $message)
     {
         $user_id = Auth::id();
         if ($user_id != $apartment->user_id) {
@@ -102,7 +81,15 @@ class MessageController extends Controller
 
         $message->delete();
 
-        return redirect()->route('message.index');
+        return redirect()->route('messages.index');
+    }
+
+    ## FUNCTIONS TRASHED RESOURCE.
+    public function trash(Request $request)
+    {
+        $user_id = Auth::id();
+        $apartments = Apartment::where('user_id', '=', $user_id)->onlyTrashed()->get();
+        return view('admin.apartments.trash', compact('apartments'));
     }
 
     /**
@@ -111,7 +98,7 @@ class MessageController extends Controller
      * @param  \App\Models\Apartment  $apartment
      * @return \Illuminate\Http\Response
      */
-    public function forceDelete(int $id)
+    public function forceDelete(Apartment $apartment, Message $message)
     {
         $message = Message::where('id', $id)->onlyTrashed()->first();
 

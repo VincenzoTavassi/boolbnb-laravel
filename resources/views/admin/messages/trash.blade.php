@@ -1,5 +1,3 @@
-@extends('layouts.app')
-
 @section('content')
 <div class="container">
   {{-- @dd($apartments) --}}
@@ -24,11 +22,10 @@
                       <td>{{$apartment->address}}</td>
                       <td>{{$message->email}}</td>
                       <td>{!! Str::limit($message->text, 15) !!}</td>
+                      
                       <td class="d-flex">
-                          <a class="me-2" href="{{route('admin.messages.show', [$apartment, $message])}}">
-                              <i class="bi bi-eye-fill"></i>
-                          </a>
-                          <button class="trash bi bi-trash-fill text-danger" data-bs-toggle="modal" data-bs-target="#delete-{{$message->id}}" href=""></button>
+                          <button class="trash bi bi-reply-fill text-success" data-bs-toggle="modal" data-bs-target="#restore-{{$message->id}}" href=""></button>
+                          <button class="trash bi bi-trash-fill text-danger ms-3" data-bs-toggle="modal" data-bs-target="#delete-{{$message->id}}" href=""></button>
                       </td>
                   </tr>
                     
@@ -47,20 +44,20 @@
 @foreach($apartments as $apartment)
               @if ($apartment->messages)
                 @forelse ($apartment->messages as $message)
-                <div class="modal fade" id="delete-{{$message->id}}" tabindex="-1" >
+                <div class="modal fade" id="delete-{{$message->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                       <div class="modal-content">
                         <div class="modal-header">
-                          <h1 class="modal-title fs-5">Elimina il messaggio inviato da {{$message->email}}?</h1>
+                          <h1 class="modal-title fs-5" id="exampleModalLabel">Elimina {{$message->email}}?</h1>
                           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                          Attenzione! Stai spostando questo messaggio nel cestino<br>
-                          Sei sicuro di volerlo spostare?
+                          Attenzione! Stai eliminando questo messaggio.<br>
+                          Sei sicuro di volerlo eliminare?
                         </div>
                         <div class="modal-footer">
                           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
-                          <form action="{{route('admin.messages.destroy', [$apartment, $message])}}" method="POST">
+                          <form action="{{route('admin.messages.forcedelete', $message)}}" method="POST">
                                 @method('delete')
                                 @csrf
                                 <button type="submit" class="btn btn-danger">Elimina</button>
@@ -68,7 +65,30 @@
                         </div>
                       </div>
                     </div>
-                </div>     
+                </div> 
+
+                <div class="modal fade" id="restore-{{$message->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h1 class="modal-title fs-5" id="exampleModalLabel">Ripristina {{$message->email}}?</h1>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                          Attenzione! Stai ripristinando questo messaggio.<br>
+                          Sei sicuro di volerlo ripristinare?
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                          <form action="{{route('admin.messages.restore', $message->id)}}" method="POST">
+                                @method('put')
+                                @csrf
+                                <button type="submit" class="btn btn-success">Ripristina</button>
+                            </form>
+                        </div>
+                      </div>
+                    </div>
+                </div>    
                 @empty
                     
                 @endforelse 

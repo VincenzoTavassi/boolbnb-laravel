@@ -21,8 +21,8 @@ use Illuminate\Support\Facades\Route;
 // # Admin/Apartment Owner routes
 Route::resource('apartments', ApartmentController::class)->middleware('auth');
 // # Admin/Messages Owner routes
-Route::resource('messages', MessageController::class)->middleware('auth')->except([
-    'create', 'show'
+Route::resource('messages', MessageController::class)->middleware('auth')->only([
+    'index'
 ]);;
 
 // # Guest route
@@ -38,12 +38,13 @@ Route::middleware('auth')
             Route::get('/apartments/trash', [ApartmentController::class, 'trash'])->name('apartments.trash');
             Route::put('/apartments/{apartment}/restore', [ApartmentController::class, 'restore'])->name('apartments.restore');
             Route::delete('/apartments/{apartment}/forcedelete', [ApartmentController::class, 'forcedelete'])->name('apartments.forcedelete');
-            // # Soft-delete and trash for messages
-            Route::get('/messages/trash', [MessageController::class, 'trash'])->name('messages.trash');
-            Route::put('/messages/{message}/restore', [MessageController::class, 'restore'])->name('messages.restore');
-            Route::delete('/messages/{message}/forcedelete', [MessageController::class, 'forcedelete'])->name('messages.forcedelete');
-            // # Personal show for messages
+            // # Personal routes for messages
             Route::get('/messages/{apartment}/{message}', [MessageController::class, 'show'])->name('messages.show');
+            Route::get('/messages/{apartment}/{message}', [MessageController::class, 'show'])->name('messages.show');
+            Route::get('/messages/trash', [MessageController::class, 'trash'])->name('messages.trash');
+            Route::put('/messages/{apartment}/{message}/restore', [MessageController::class, 'restore'])->name('messages.restore');
+            Route::delete('/messages/{apartment}/{message}', [MessageController::class, 'destroy'])->name('messages.destroy');
+            Route::delete('/messages/{apartment}/{message}/forcedelete', [MessageController::class, 'forcedelete'])->name('messages.forcedelete');
             // # Apartments resource
             Route::get('/dashboard',   [AdminHomeController::class,    'dashboard'])->name('dashboard');
         }
