@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\ApartmentController;
 use App\Http\Controllers\Api\MessageController;
+use App\Http\Controllers\Api\LoginController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -33,3 +35,8 @@ Route::apiResource('/messages', MessageController::class);
 
 Route::get('/sponsored/{plan?}/{max?}/{random?}', [ApartmentController::class, 'getSponsored']);
 Route::get('/standard/{max?}/{random?}', [ApartmentController::class, 'getStandard']);
+
+Route::post('/login', [LoginController::class, 'login']);
+Route::middleware('auth:sanctum')->get('/check-token', function (Request $request) {
+    return response()->json(['message' => 'Token valido'], 200);
+});
