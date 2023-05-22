@@ -69,6 +69,9 @@ class ApartmentController extends Controller
             $distanceBetween = 0;
         }
 
+        foreach ($apartments_inside_circle as $apartment) {
+            $apartment->image = $apartment->getImage();
+        }
         return response()->json($apartments_inside_circle);
     }
 
