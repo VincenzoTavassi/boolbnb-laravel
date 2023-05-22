@@ -19,13 +19,11 @@ class MessageController extends Controller
      */
     public function store(Request $request)
     {
-        $apartment_id = Apartment::id();
         $data = $this->validation($request->all());
         $message = new Message();
         $message->fill($data);
-        $message->apartment_id = $apartment_id;
-        $apartment->save();
-        return 'Messaggio inviato correttamente!!';
+        $message->save();
+        return $request;
     }
 
     ## VALIDATION
@@ -38,7 +36,8 @@ class MessageController extends Controller
             [
                 'email' => 'required|max:100',
                 'name' => 'nullable|max:50',
-                'text' => 'required'
+                'text' => 'required',
+                'apartment_id' => 'required|numeric'
             ],
         )->validate();
     }

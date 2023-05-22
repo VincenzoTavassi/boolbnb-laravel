@@ -28,5 +28,8 @@ Route::get('/apartments/{lat}/{lon}/{distance}', [ApartmentController::class, 'a
 
 Route::apiResource('/messages', MessageController::class);
 
+
+// /apartment/4?email=c%40c.com&name=Fr&message=ciao
+
 Route::get('/sponsored/{plan?}/{max?}/{random?}', [ApartmentController::class, 'getSponsored']);
 Route::get('/standard/{max?}/{random?}', [ApartmentController::class, 'getStandard']);

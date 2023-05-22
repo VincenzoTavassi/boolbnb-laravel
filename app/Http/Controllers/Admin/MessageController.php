@@ -7,6 +7,7 @@ use App\Models\Message;
 use App\Models\Apartment;
 use App\Models\Service;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 
 class MessageController extends Controller
