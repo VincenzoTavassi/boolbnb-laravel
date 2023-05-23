@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\ApartmentController;
 use App\Http\Controllers\Admin\MessageController;
 use App\Http\Controllers\Admin\ProfileController;
+use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\HomeController as AdminHomeController;
 use App\Http\Controllers\Guest\HomeController as GuestHomeController;
 use Illuminate\Support\Facades\Route;
@@ -39,12 +40,15 @@ Route::middleware('auth')
             Route::put('/apartments/{apartment}/restore', [ApartmentController::class, 'restore'])->name('apartments.restore');
             Route::delete('/apartments/{apartment}/forcedelete', [ApartmentController::class, 'forcedelete'])->name('apartments.forcedelete');
             // # Personal routes for messages
-            Route::get('/messages/{apartment}/{message}', [MessageController::class, 'show'])->name('messages.show');
-            Route::get('/messages/{apartment}/{message}', [MessageController::class, 'show'])->name('messages.show');
             Route::get('/messages/trash', [MessageController::class, 'trash'])->name('messages.trash');
+            Route::get('/messages/{apartment}/', [MessageController::class, 'listByApartment'])->name('messages.listByApartment');
+            Route::get('/messages/{apartment}/{message}', [MessageController::class, 'show'])->name('messages.show');
             Route::put('/messages/{apartment}/{message}/restore', [MessageController::class, 'restore'])->name('messages.restore');
             Route::delete('/messages/{apartment}/{message}', [MessageController::class, 'destroy'])->name('messages.destroy');
             Route::delete('/messages/{apartment}/{message}/forcedelete', [MessageController::class, 'forcedelete'])->name('messages.forcedelete');
+            // # Personal routes for payments of sponsored apartments
+            Route::get('/payment', [PaymentController::class, 'showPayment'])->name('payment.form');
+            Route::post('/payment', [PaymentController::class, 'checkoutPayment'])->name('payment.checkout');
             // # Apartments resource
             Route::get('/dashboard',   [AdminHomeController::class,    'dashboard'])->name('dashboard');
         }

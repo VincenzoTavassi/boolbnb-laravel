@@ -1,8 +1,9 @@
+@extends('layouts.app')
+
 @section('content')
 <div class="container">
-  {{-- @dd($apartments) --}}
-    <h1 class="text-center">Lista messaggi</h1>
-    <a href="{{ route('admin.messages.trash') }}" class="btn btn-outline-danger my-3">Vai al cestino</a>
+    <h1 class="text-center">Lista cestino</h1>
+    <a href="{{ route('messages.index') }}" class="btn btn-outline-primary my-3">Torna alla lista</a>
     <table class="table table-striped">
         <thead>
             <tr>
@@ -14,12 +15,16 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($apartments as $apartment)
-              @if ($apartment->messages)
-                @forelse ($apartment->messages as $message)
+            @foreach($messagesList as $messageList)
+              @if ($messageList)
+                @foreach ($messageList as $message)
                   <tr>
-                      <td>{{$apartment->title}}</td>
-                      <td>{{$apartment->address}}</td>
+                      @foreach ($apartments as $apartment)
+                        @if ($apartment->id == $message->apartment_id)
+                        <td>{{$apartment->title}}</td>
+                        <td>{{$apartment->address}}</td>
+                        @endif
+                      @endforeach
                       <td>{{$message->email}}</td>
                       <td>{!! Str::limit($message->text, 15) !!}</td>
                       
@@ -28,10 +33,7 @@
                           <button class="trash bi bi-trash-fill text-danger ms-3" data-bs-toggle="modal" data-bs-target="#delete-{{$message->id}}" href=""></button>
                       </td>
                   </tr>
-                    
-                @empty
-                    
-                @endforelse 
+                @endforeach 
               @endif
             @endforeach
         </tbody>
@@ -41,9 +43,9 @@
 
 @section('modals')
 <!-- Modal -->
-@foreach($apartments as $apartment)
-              @if ($apartment->messages)
-                @forelse ($apartment->messages as $message)
+@foreach($messagesList as $messageList)
+              @if ($messageList)
+                @foreach ($messageList as $message)
                 <div class="modal fade" id="delete-{{$message->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                       <div class="modal-content">
@@ -57,11 +59,15 @@
                         </div>
                         <div class="modal-footer">
                           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
-                          <form action="{{route('admin.messages.forcedelete', $message)}}" method="POST">
-                                @method('delete')
-                                @csrf
-                                <button type="submit" class="btn btn-danger">Elimina</button>
+                          @foreach ($apartments as $apartment)
+                            @if ($apartment->id == $message->apartment_id)
+                            <form action="{{route('admin.messages.forcedelete', [$apartment, $message])}}" method="POST">
+                                  @method('delete')
+                                  @csrf
+                                  <button type="submit" class="btn btn-danger">Elimina</button>
                             </form>
+                            @endif
+                          @endforeach
                         </div>
                       </div>
                     </div>
@@ -80,7 +86,7 @@
                         </div>
                         <div class="modal-footer">
                           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
-                          <form action="{{route('admin.messages.restore', $message->id)}}" method="POST">
+                          <form action="{{route('admin.messages.restore', [$apartment, $message])}}" method="POST">
                                 @method('put')
                                 @csrf
                                 <button type="submit" class="btn btn-success">Ripristina</button>
@@ -89,9 +95,7 @@
                       </div>
                     </div>
                 </div>    
-                @empty
-                    
-                @endforelse 
+              @endforeach 
               @endif
-      @endforeach
+            @endforeach
 @endsection
