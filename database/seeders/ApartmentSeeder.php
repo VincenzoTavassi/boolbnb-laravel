@@ -101,7 +101,9 @@ class ApartmentSeeder extends Seeder
             $apartment->address = $faker->streetAddress();
             $apartment->latitude = $coordinates[$i][0];
             $apartment->longitude = $coordinates[$i][1];
-            $apartment->visible = $faker->boolean();
+            $visible_roll = rand(0, 1);
+            if ($visible_roll) $apartment->visible = $faker->boolean();
+            else $apartment->visible = 1;
             $number = $faker->numberBetween(1, 15);
             $apartment->user_id = $number;
             $apartment->save();
