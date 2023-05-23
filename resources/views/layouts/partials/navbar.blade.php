@@ -17,10 +17,10 @@
           <a class="nav-link text-dark" href="{{ route('homepage') }}">Back Office</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-dark" href="{{ route('apartments.index') }}">{{ __('Lista') }}</a>
+            <a class="nav-link text-dark" href="{{ route('apartments.index') }}">{{ __('Appartamenti') }}</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-dark" href="{{ route('messages.index') }}">{{ __('Lista messaggi') }}</a>
+            <a class="nav-link text-dark" href="{{ route('messages.index') }}">{{ __('Messaggi') }}</a>
           </li>
           <li class="nav-item">
             <a class="nav-link text-dark" href="{{ route('apartments.create') }}">{{ __('Crea annuncio') }}</a>
