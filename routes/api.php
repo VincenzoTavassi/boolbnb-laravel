@@ -38,5 +38,9 @@ Route::get('/standard/{max?}/{random?}', [ApartmentController::class, 'getStanda
 
 Route::post('/login', [LoginController::class, 'login']);
 Route::middleware('auth:sanctum')->get('/check-token', function (Request $request) {
-    return response()->json(['message' => 'Token valido'], 200);
+    $user = auth('sanctum')->user();
+    return response()->json([
+        'message' => 'Token valido',
+        'user' => $user
+    ], 200);
 });
