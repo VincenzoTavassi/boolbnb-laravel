@@ -43,6 +43,8 @@ Route::middleware('auth')
             // # Personal routes for payments of sponsored apartments
             Route::get('apartments/payment/', [PaymentController::class, 'show'])->name('payment.show');
             Route::get('apartments/payment/process', [PaymentController::class, 'process'])->name('payment.process');
+            Route::post('apartments/payment/store', [PaymentController::class, 'store'])->name('payment.store');
+
 
             // # Personal routes for messages
             Route::get('/messages/trash', [MessageController::class, 'trash'])->name('messages.trash');
@@ -51,7 +53,7 @@ Route::middleware('auth')
             Route::put('/messages/{apartment}/{message}/restore', [MessageController::class, 'restore'])->name('messages.restore');
             Route::delete('/messages/{apartment}/{message}', [MessageController::class, 'destroy'])->name('messages.destroy');
             Route::delete('/messages/{apartment}/{message}/forcedelete', [MessageController::class, 'forcedelete'])->name('messages.forcedelete');
-            
+
             // # Apartments resource
             Route::get('/dashboard',   [AdminHomeController::class,    'dashboard'])->name('dashboard');
         }
