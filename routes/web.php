@@ -39,6 +39,11 @@ Route::middleware('auth')
             Route::get('/apartments/trash', [ApartmentController::class, 'trash'])->name('apartments.trash');
             Route::put('/apartments/{apartment}/restore', [ApartmentController::class, 'restore'])->name('apartments.restore');
             Route::delete('/apartments/{apartment}/forcedelete', [ApartmentController::class, 'forcedelete'])->name('apartments.forcedelete');
+
+            // # Personal routes for payments of sponsored apartments
+            Route::get('apartments/payment/', [PaymentController::class, 'show'])->name('payment.show');
+            Route::get('apartments/payment/process', [PaymentController::class, 'process'])->name('payment.process');
+
             // # Personal routes for messages
             Route::get('/messages/trash', [MessageController::class, 'trash'])->name('messages.trash');
             Route::get('/messages/{apartment}/', [MessageController::class, 'listByApartment'])->name('messages.listByApartment');
@@ -46,9 +51,7 @@ Route::middleware('auth')
             Route::put('/messages/{apartment}/{message}/restore', [MessageController::class, 'restore'])->name('messages.restore');
             Route::delete('/messages/{apartment}/{message}', [MessageController::class, 'destroy'])->name('messages.destroy');
             Route::delete('/messages/{apartment}/{message}/forcedelete', [MessageController::class, 'forcedelete'])->name('messages.forcedelete');
-            // # Personal routes for payments of sponsored apartments
-            Route::get('/payment', [PaymentController::class, 'showPayment'])->name('payment.form');
-            Route::post('/payment', [PaymentController::class, 'checkoutPayment'])->name('payment.checkout');
+            
             // # Apartments resource
             Route::get('/dashboard',   [AdminHomeController::class,    'dashboard'])->name('dashboard');
         }

@@ -12,11 +12,14 @@
     
     <div class="card">
         <div class="card-body">
-            <h3>{{ $apartment->title }}</h3>
+            <div class="d-flex justify-content-between">
+                <h3>{{ $apartment->title }}</h3>
+                <a class="btn btn-outline-success" href="{{ route('admin.payment.show', $apartment) }}">Vuoi sponsorizzare l'appartamento?</a>
+            </div>
             <hr>
             <div class="row">
                 <div class="col-4">
-                    <h6 class="mb-5">Questo appartamento {{($apartment->visible) ? 'è' : 'non'}} pubblicato</h6>
+                    <h6 class="mb-5">Questo appartamento {{($apartment->visible) ? 'è' : 'non è'}} pubblicato</h6>
                     <hr class="w-50">
                     <div class="mb-5">
                         <h5 class="">Indirizzo: </h5>
