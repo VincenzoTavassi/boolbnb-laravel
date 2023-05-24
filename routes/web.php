@@ -44,6 +44,10 @@ Route::middleware('auth')
             Route::get('apartments/payment/', [PaymentController::class, 'show'])->name('payment.show');
             Route::get('apartments/payment/process', [PaymentController::class, 'process'])->name('payment.process');
             Route::post('apartments/payment/store', [PaymentController::class, 'store'])->name('payment.store');
+            Route::get('apartments/payment/gateway', [PaymentController::class, 'gateway'])->name('payment.gateway');
+            Route::post('apartments/payment/checkpay', [PaymentController::class, 'check_pay'])->name('payment.checkpay');
+
+
 
 
             // # Personal routes for messages
