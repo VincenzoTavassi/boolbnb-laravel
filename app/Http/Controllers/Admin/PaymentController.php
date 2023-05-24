@@ -68,13 +68,18 @@ class PaymentController extends Controller
         $apartment = Apartment::findOrFail($apartment_id);
         $plan_id = $data['plan_id'];
         $plan = Plan::findOrFail($plan_id);
-        if ($apartment->user->id != $user->id) return response()->json(['error' => 'Non sei autorizzato a sponsorizzare questo appartamento'], 403);
-        $currentDate = Carbon::now('Europe/Rome');
+        if ($apartment->user->id != $user->id) return back()->with('danger', 'Non sei autorizzato a sponsorizzare questo appartamento');
+        $current_date = Carbon::now('Europe/Rome');
+        $has_plan = $apartment->plans()->where('end_date', '>', $current_date)->orderBy('end_date', 'asc')->first();
+        if ($has_plan) return to_route('apartments.show', compact('apartment'))->with('danger', "E' già presente un piano di sponsorizzazione attiva per questo appartamento");
         $apartment->plans()->attach($plan_id, [
-            'start_date' => $currentDate->toDateTimeString(),
-            'created_at' => $currentDate->toDateTimeString(),
-            'end_date' => $currentDate->addHours($plan->length),
+            'start_date' => $current_date->toDateTimeString(),
+            'created_at' => $current_date->toDateTimeString(),
+            'end_date' => $current_date->addHours($plan->length),
         ]);
-        return to_route('apartments.show', compact('apartment'))->with('message', 'Appartamento sponsorizzato con successo');
+        $current_date_now = Carbon::now('Europe/Rome');
+        $active_plan = $apartment->plans()->where('end_date', '>', $current_date_now)->orderBy('end_date', 'asc')->first();
+
+        return to_route('apartments.show', compact('apartment'))->with('message', 'Appartamento sponsorizzato con successo per ' . $active_plan->length . ' ore');
     }
 }

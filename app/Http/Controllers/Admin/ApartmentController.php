@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Apartment;
 use App\Models\Service;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -74,10 +75,16 @@ class ApartmentController extends Controller
             return back()
                 ->with('danger', 'Non sei autorizzato a vedere questo elemento');
         }
-
-        $services = Service::all();
-
-        return view('admin.apartments.show', compact('apartment', 'services'));
+        $current_date_now = Carbon::now('Europe/Rome');
+        $active_plan = $apartment->plans()->where('end_date', '>', $current_date_now)->orderBy('end_date', 'asc')->first();
+        if ($active_plan) {
+            $diff_in_hours = $current_date_now->diffInHours($active_plan->pivot->end_date);
+            $apartment->current_sponsored = [
+                'plan' => $active_plan->title,
+                'time_left' => $diff_in_hours
+            ];
+        }
+        return view('admin.apartments.show', compact('apartment'));
     }
 
     /**

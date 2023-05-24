@@ -14,7 +14,14 @@
         <div class="card-body">
             <div class="d-flex justify-content-between">
                 <h3>{{ $apartment->title }}</h3>
-                <a class="btn btn-outline-success" href="{{ route('admin.payment.show', $apartment) }}">Vuoi sponsorizzare l'appartamento?</a>
+                @if(!$apartment->current_sponsored)
+                <a class="btn btn-outline-success" href="{{ route('admin.payment.show', $apartment) }}">Vuoi sponsorizzare l'appartamento?</a>                    
+                @else
+                <div class="text-center text-success">
+                    <p>Complimenti! Il tuo appartamento ha un piano attivo!</p>
+                    <p>Restano <strong>{{$apartment->current_sponsored['time_left']}} ore</strong> alla fine del tuo piano <strong>{{$apartment->current_sponsored['plan']}}</strong>.</p>
+                </div>
+                @endif
             </div>
             <hr>
             <div class="row">
