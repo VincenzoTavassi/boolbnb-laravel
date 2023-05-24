@@ -27,25 +27,28 @@ class MessageController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Display a listing of the resource ONLY OF THE APARTMENT REQUESTED.
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function listByApartment($apartment_id)
     {
-        //
+        $user_id = Auth::id();
+        $apartments_id = Apartment::where('user_id', '=', $user_id)
+            ->pluck('id');
+        $apartments = [];
+        foreach ($apartments_id as $id) {
+            if ($id == $apartment_id) {
+                $apartments = Apartment::where('user_id', '=', $user_id)
+                    ->where('id', '=', $apartment_id)
+                    ->with('messages')
+                    ->get();
+            }
+        }
+        return view('admin.messages.index', compact('apartments', 'user_id'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+    
 
     /**
      * Display the specified resource.
@@ -89,34 +92,56 @@ class MessageController extends Controller
     public function trash(Request $request)
     {
         $user_id = Auth::id();
-        $apartments = Apartment::where('user_id', '=', $user_id)->onlyTrashed()->get();
-        return view('admin.apartments.trash', compact('apartments'));
+        $apartments = Apartment::where('user_id', '=', $user_id)
+            ->get();
+        $apartments_id = Apartment::where('user_id', '=', $user_id)
+            ->pluck('id');
+        $messagesList = [];
+        foreach ($apartments_id as $apartment_id) {
+            $messages = Message::onlyTrashed()
+                ->where('apartment_id', '=', $apartment_id)
+                ->get();
+            $messagesList[] = $messages;
+        };
+        return view('admin.messages.trash', compact('messagesList', 'apartments'));
     }
 
     /**
      * Force-delete the specified resource from storage.
      *
-     * @param  \App\Models\Apartment  $apartment
+     *
      * @return \Illuminate\Http\Response
      */
-    public function forceDelete(Apartment $apartment, Message $message)
+    public function forceDelete($apartment_id, $message_id)
     {
-        $message = Message::where('id', $id)->onlyTrashed()->first();
-
+        $user_id = Auth::id();
+        $apartments_id_list = Apartment::where('user_id', '=', $user_id)
+            ->pluck('id');
+        foreach ($apartments_id_list as $id) {
+            if ($id == $apartment_id) {
+                $message = Message::where('id', $message_id)->onlyTrashed()->first();
+                $message->forcedelete();
+            }
+        };
         return redirect()->route('admin.messages.trash');
     }
 
     /**
      * Restore the specified resource from storage.
      *
-     * @param  \App\Models\Project  $project
      * @return \Illuminate\Http\Response
      */
-    public function restore(int $id)
+    public function restore($apartment_id, $message_id)
     {
-        $message = Message::where('id', $id)->onlyTrashed()->first();
-        $message->restore();
-
+        $user_id = Auth::id();
+        $apartments_id_list = Apartment::where('user_id', '=', $user_id)
+            ->pluck('id');
+        foreach ($apartments_id_list as $id) {
+            if ($id == $apartment_id) {
+                $message = Message::where('id', $message_id)->onlyTrashed()->first();
+                $message->restore();
+            }
+        };
         return to_route('messages.index');
     }
 }

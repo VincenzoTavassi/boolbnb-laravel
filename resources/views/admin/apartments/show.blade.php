@@ -6,7 +6,8 @@
 <div class="container">
     <div class="my-4">
         <a class="btn btn-outline-primary me-3" href="{{ route('apartments.index') }}">Torna alla lista</a>
-        <a class="btn btn-outline-primary" href="{{ route('apartments.edit', $apartment) }}">Modifica annuncio</a>
+        <a class="btn btn-outline-primary me-3" href="{{ route('apartments.edit', $apartment) }}">Modifica annuncio</a>
+        <a class="btn btn-outline-success" href="{{ route('admin.messages.listByApartment', $apartment) }}">Vai ai messaggi dell'annuncio</a>
     </div>
     
     <div class="card">

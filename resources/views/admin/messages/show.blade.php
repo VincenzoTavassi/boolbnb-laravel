@@ -3,9 +3,11 @@
 @section('title')
 
 @section('content')
+{{-- @dd($apartment) --}}
 <div class="container">
     <div class="my-4">
         <a class="btn btn-outline-primary me-3" href="{{ route('messages.index') }}">Torna alla lista</a>
+        <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#delete-{{$message->id}}" href="">Elimina il messaggio</button>
     </div>
     
     <div class="card">
@@ -31,4 +33,30 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('modals')
+<!-- Modal -->
+    <div class="modal fade" id="delete-{{$message->id}}" tabindex="-1" >
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Elimina il messaggio inviato da {{$message->email}}?</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"button>
+            </div>
+            <div class="modal-body">
+                Attenzione! Stai spostando questo messaggio nel cestino<br>
+                Sei sicuro di volerlo spostare?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                <form action="{{route('admin.messages.destroy', [$apartment, $message])}}" method="POST">
+                    @method('delete')
+                    @csrf
+                    <button type="submit" class="btn btn-danger">Elimina</button>
+                </form>
+            </div>
+            </div>
+        </div>
+    </div>     
 @endsection
