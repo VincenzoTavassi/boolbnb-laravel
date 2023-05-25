@@ -41,11 +41,11 @@ Route::middleware('auth')
             Route::delete('/apartments/{apartment}/forcedelete', [ApartmentController::class, 'forcedelete'])->name('apartments.forcedelete');
 
             // # Personal routes for payments of sponsored apartments
-            Route::get('apartments/payment/', [PaymentController::class, 'show'])->name('payment.show');
+            Route::get('apartments/payment/gateway', [PaymentController::class, 'gateway'])->name('payment.gateway');
+            Route::get('apartments/payment/{apartment}', [PaymentController::class, 'show'])->name('payment.show');
             Route::get('apartments/payment/process', [PaymentController::class, 'process'])->name('payment.process');
             Route::post('apartments/payment/store', [PaymentController::class, 'store'])->name('payment.store');
-            Route::get('apartments/payment/gateway', [PaymentController::class, 'gateway'])->name('payment.gateway');
-            Route::post('apartments/payment/checkpay', [PaymentController::class, 'check_pay'])->name('payment.checkpay');
+            Route::post('apartments/payment/checkpay/{apartment}', [PaymentController::class, 'check_pay'])->name('payment.checkpay');
 
 
 
