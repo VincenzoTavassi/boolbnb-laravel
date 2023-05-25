@@ -23,6 +23,19 @@ class ApartmentController extends Controller
     {
         $user_id = Auth::id();
         $apartments = Apartment::where('user_id', '=', $user_id)->Paginate(4);
+
+        $current_date_now = Carbon::now('Europe/Rome');
+        foreach ($apartments as $apartment) {
+            $active_plan = $apartment->plans()->where('end_date', '>', $current_date_now)->orderBy('end_date', 'asc')->first();
+            if ($active_plan) {
+                $diff_in_hours = $current_date_now->diffInHours($active_plan->pivot->end_date);
+                $apartment->current_sponsored = [
+                    'plan' => $active_plan->title,
+                    'time_left' => $diff_in_hours
+                ];
+            }
+        }
+
         return view('admin.apartments.index', compact('apartments', 'user_id'));
     }
 

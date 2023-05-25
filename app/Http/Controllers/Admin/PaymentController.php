@@ -14,36 +14,23 @@ class PaymentController extends Controller
 {
     public function show(Apartment $apartment)
     {
+        $user_id = Auth::id();
+        if ($user_id != $apartment->user_id) {
+            return to_route('apartments.index')
+                ->with('danger', 'Non sei autorizzato a vedere questo elemento');
+        }
         return view('admin.apartments.checkout', compact('apartment'));
     }
 
-
-    // public function store(Request $request)
-    // {
-    //     if (!Auth::user()) return response()->json(['error' => 'Utente non loggato'], 403);
-    //     $user = Auth::user();
-    //     $data = $request->all();
-    //     $apartment_id = $data['apartment_id'];
-    //     $apartment = Apartment::findOrFail($apartment_id);
-    //     $plan_id = $data['plan_id'];
-    //     $plan = Plan::findOrFail($plan_id);
-    //     if ($apartment->user->id != $user->id) return back()->with('danger', 'Non sei autorizzato a sponsorizzare questo appartamento');
-    //     $current_date = Carbon::now('Europe/Rome');
-    //     $has_plan = $apartment->plans()->where('end_date', '>', $current_date)->orderBy('end_date', 'asc')->first();
-    //     if ($has_plan) return to_route('apartments.show', compact('apartment'))->with('danger', "E' già presente un piano di sponsorizzazione attiva per questo appartamento");
-    //     $apartment->plans()->attach($plan_id, [
-    //         'start_date' => $current_date->toDateTimeString(),
-    //         'created_at' => $current_date->toDateTimeString(),
-    //         'end_date' => $current_date->addHours($plan->length),
-    //     ]);
-    //     $current_date_now = Carbon::now('Europe/Rome');
-    //     $active_plan = $apartment->plans()->where('end_date', '>', $current_date_now)->orderBy('end_date', 'asc')->first();
-
-    //     return to_route('apartments.show', compact('apartment'))->with('message', 'Appartamento sponsorizzato con successo per ' . $active_plan->length . ' ore');
-    // }
-
-    public function gateway()
+    public function gateway($id)
     {
+        $apartment = Apartment::findOrFail($id);
+        $user_id = Auth::id();
+        if ($user_id != $apartment->user_id) {
+            return to_route('apartments.index')
+                ->with('danger', 'Non sei autorizzato a vedere questo elemento');
+        }
+
         $gateway = new Braintree\Gateway([
             'environment' => env('BRAINTREE_ENV'),
             'merchantId' => env('BRAINTREE_MERCHANT_ID'),
@@ -70,7 +57,7 @@ class PaymentController extends Controller
         if (!Auth::user()) return response()->json(['error' => 'Utente non loggato'], 403);
         $plan_id = $data['plan_id'];
         $plan = Plan::findOrFail($plan_id);
-        if ($apartment->user->id != $user->id) return back()->with('danger', 'Non sei autorizzato a sponsorizzare questo appartamento');
+        if ($apartment->user->id != $user->id) return to_route('apartments.index')->with('danger', 'Non sei autorizzato a sponsorizzare questo appartamento');
         $current_date = Carbon::now('Europe/Rome');
         $has_plan = $apartment->plans()->where('end_date', '>', $current_date)->orderBy('end_date', 'asc')->first();
         if ($has_plan) return to_route('apartments.show', compact('apartment'))->with('danger', "E' già presente un piano di sponsorizzazione attiva per questo appartamento");
@@ -84,6 +71,8 @@ class PaymentController extends Controller
             ]
         ]);
         if ($result->success) {
+            $apartment->updated_at = $current_date->toDateTimeString();
+            $apartment->save();
             $apartment->plans()->attach($plan_id, [
                 'start_date' => $current_date->toDateTimeString(),
                 'created_at' => $current_date->toDateTimeString(),

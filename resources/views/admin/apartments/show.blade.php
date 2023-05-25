@@ -18,7 +18,7 @@
                 <a class="btn btn-outline-success" href="{{ route('admin.payment.show', $apartment) }}">Vuoi sponsorizzare l'appartamento?</a>                    
                 @else
                 <div class="text-center text-success">
-                    <p>Complimenti! Il tuo appartamento ha un piano attivo!</p>
+                    <p>Complimenti {{Auth::user()->name}}! Il tuo appartamento ha un piano attivo!</p>
                     <p>Restano <strong>{{$apartment->current_sponsored['time_left']}} ore</strong> alla fine del tuo piano <strong>{{$apartment->current_sponsored['plan']}}</strong>.</p>
                 </div>
                 @endif

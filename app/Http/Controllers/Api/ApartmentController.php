@@ -109,7 +109,14 @@ class ApartmentController extends Controller
             ->with('services');
         if ($random) $query->inRandomOrder(); // Se è specificato, selezioniamo risultati random
         if ($max) $query->take($max); // Se è indicato, ottieni il numero di risultati richiesti
-        $query->orderBy('updated_at', 'desc'); // Ordina per ultimo aggiornamento
+        $query->orderByDesc(function ($query) { // Ordina i risultati in base alla creazione del piano di sponsorizzazione
+            $query->select('apartment_plan.start_date')
+                ->from('plans')
+                ->join('apartment_plan', 'plans.id', '=', 'apartment_plan.plan_id')
+                ->whereColumn('apartments.id', 'apartment_plan.apartment_id')
+                ->orderBy('apartment_plan.start_date', 'desc')
+                ->limit(1);
+        });
 
         $apartments = $query->get();
         return response()->json($apartments);
