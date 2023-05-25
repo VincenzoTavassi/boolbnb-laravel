@@ -8,7 +8,6 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th scope="col">id</th>
                 <th scope="col">Immagine</th>
                 <th scope="col">Promozioni</th>
                 <th scope="col">Title</th>
@@ -23,8 +22,7 @@
         <tbody>
             @foreach($apartments as $apartment)
             <tr class="align-middle">
-                <th scope="row">{{$apartment->id}}</th>
-                <td><img src="{{$apartment->image}}" alt="{{$apartment->title}}" height="100px"></td>
+                <th scope="row"><img src="{{$apartment->image}}" alt="{{$apartment->title}}" height="100px"></th>
                 <td class="text-success text-center">
                     <span>{{$apartment->current_sponsored ? $apartment->current_sponsored['plan'] : ''}}</span><br>
                     <span>{{$apartment->current_sponsored ? '(-' . $apartment->current_sponsored['time_left'] . ' ore)' : ''}}
