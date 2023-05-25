@@ -17,38 +17,29 @@ class MessageController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $user_id = Auth::id();
-        $apartments = Apartment::where('user_id', '=', $user_id)
-            ->with('messages')
-            ->get();
-        return view('admin.messages.index', compact('apartments', 'user_id'));
-    }
-
-    /**
-     * Display a listing of the resource ONLY OF THE APARTMENT REQUESTED.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function listByApartment($apartment_id)
-    {
-        $user_id = Auth::id();
-        $apartments_id = Apartment::where('user_id', '=', $user_id)
-            ->pluck('id');
-        $apartments = [];
-        foreach ($apartments_id as $id) {
-            if ($id == $apartment_id) {
-                $apartments = Apartment::where('user_id', '=', $user_id)
-                    ->where('id', '=', $apartment_id)
-                    ->with('messages')
-                    ->get();
-            }
+        if ($request->term) {
+            $apartment_id = Apartment::where('user_id', '=', $user_id)
+                ->where('title', 'LIKE', '%'.$request->term.'%')
+                ->first()->id;
+                $messages = Message::where('apartment_id', '=', $apartment_id)
+                ->with('apartment')
+                ->orderBy('created_at', 'ASC')
+                ->get();
+        } else {
+            $messages = Message::where('user_id', '=', $user_id)
+                ->with('apartment')
+                ->orderBy('created_at', 'ASC')
+                ->get();
         }
-        return view('admin.messages.index', compact('apartments', 'user_id'));
+        // dd($messages);
+
+        return view('admin.messages.index', compact('messages', 'user_id'));
     }
 
-    
+
 
     /**
      * Display the specified resource.
@@ -92,18 +83,12 @@ class MessageController extends Controller
     public function trash(Request $request)
     {
         $user_id = Auth::id();
-        $apartments = Apartment::where('user_id', '=', $user_id)
+        $messages = Message::onlyTrashed()
+            ->where('user_id', '=', $user_id)
+            ->with('apartment')
+            ->orderBy('deleted_at', 'ASC')
             ->get();
-        $apartments_id = Apartment::where('user_id', '=', $user_id)
-            ->pluck('id');
-        $messagesList = [];
-        foreach ($apartments_id as $apartment_id) {
-            $messages = Message::onlyTrashed()
-                ->where('apartment_id', '=', $apartment_id)
-                ->get();
-            $messagesList[] = $messages;
-        };
-        return view('admin.messages.trash', compact('messagesList', 'apartments'));
+        return view('admin.messages.trash', compact('messages'));
     }
 
     /**

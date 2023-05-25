@@ -18,7 +18,7 @@ class MessageSeeder extends Seeder
     {
         $faker = Faker::create();
 
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 50; $i++) {
             $num = $faker->numberBetween(1, 20);
             $apartment = Apartment::where('id', '=', $num)->first();
             Message::create([

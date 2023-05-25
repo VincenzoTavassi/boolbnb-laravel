@@ -3,12 +3,11 @@
 @section('content')
 <div class="container">
     <h1 class="text-center">Lista Appartamenti</h1>
-    <a href="{{ route('apartments.create') }}" class="btn btn-outline-primary m-3">Crea annuncio</a>
-    <a href="{{ route('admin.apartments.trash') }}" class="btn btn-outline-primary my-3">Vai a cestino</a>
+    <a href="{{ route('apartments.create') }}" class="btn btn-outline-primary my-3 me-3">Crea annuncio</a>
+    <a href="{{ route('admin.apartments.trash') }}" class="btn btn-outline-danger my-3">Vai al cestino</a>
     <table class="table table-striped">
         <thead>
             <tr>
-                <th scope="col">id</th>
                 <th scope="col">Title</th>
                 <th scope="col">Address</th>
                 <th scope="col">Price</th>
@@ -21,7 +20,6 @@
         <tbody>
             @foreach($apartments as $apartment)
             <tr>
-                <th scope="row">{{$apartment->id}}</th>
                 <td>{{$apartment->title}}</td>
                 <td>{{$apartment->address}}</td>
                 <td>{{$apartment->price}}</td>
