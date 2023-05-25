@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ApartmentController;
 use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\LoginController;
-
+use App\Http\Controllers\Api\ViewController;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,3 +44,5 @@ Route::middleware('auth:sanctum')->get('/check-token', function (Request $reques
         'user' => $user
     ], 200);
 });
+
+Route::get('/view/store', [ViewController::class, 'store']);
