@@ -3,7 +3,6 @@
 use App\Http\Controllers\Admin\ApartmentController;
 use App\Http\Controllers\Admin\MessageController;
 use App\Http\Controllers\Admin\ProfileController;
-use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\HomeController as AdminHomeController;
 use App\Http\Controllers\Guest\HomeController as GuestHomeController;
 use Illuminate\Support\Facades\Route;
