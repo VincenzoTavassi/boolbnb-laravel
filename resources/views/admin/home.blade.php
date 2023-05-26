@@ -59,9 +59,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
-<script>
-  const ctx = document.getElementById('myChart');
-  
+<script>  
   axios.get('http://localhost:8000/admin/views/json').then((response) => {
     const apartments = response.data;
     apartments.forEach(apartment => {
