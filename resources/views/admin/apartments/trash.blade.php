@@ -7,7 +7,6 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th scope="col">id</th>
                 <th scope="col">Title</th>
                 <th scope="col">Adress</th>
                 <th scope="col">Price</th>
@@ -29,7 +28,6 @@
         <tbody>
             @foreach($apartments as $apartment)
             <tr>
-                <th scope="row">{{$apartment->id}}</th>
                 <td>{{$apartment->title}}</td>
                 <td>{{$apartment->address}}</td>
                 <td>{{$apartment->price}}</td>
