@@ -14,7 +14,7 @@
         @auth
         <ul class="navbar-nav me-auto">
           <li class="nav-item">
-          <a class="nav-link text-dark" href="{{ route('homepage') }}">Back Office</a>
+          <a class="nav-link text-dark" href="{{ route('admin.dashboard') }}">Statistiche</a>
           </li>
           <li class="nav-item">
             <a class="nav-link text-dark" href="{{ route('apartments.index') }}">{{ __('Appartamenti') }}</a>

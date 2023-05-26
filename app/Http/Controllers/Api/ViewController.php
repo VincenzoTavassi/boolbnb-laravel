@@ -17,7 +17,7 @@ class ViewController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($json = false)
     {
         $user = Auth::user();
         $apartments = $user->apartments;
@@ -44,7 +44,8 @@ class ViewController extends Controller
             }
             $apartment->date_views = $date_views;
         }
-        return view('admin.home', compact('apartments'));
+        if ($json) return response()->json($apartments);
+        else return view('admin.home', compact('apartments'));
     }
 
     /**

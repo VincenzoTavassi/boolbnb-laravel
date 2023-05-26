@@ -61,7 +61,7 @@ Route::middleware('auth')
             Route::get('/dashboard',   [ViewController::class,    'index'])->name('dashboard');
 
             // # Views index
-            Route::get('views', [ViewController::class, 'index'])->middleware('auth');
+            Route::get('views/{json?}', [ViewController::class, 'index']);
         }
     );
 

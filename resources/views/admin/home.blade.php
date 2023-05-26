@@ -49,4 +49,44 @@
         </div>
     
 </div>
+
+@foreach($apartments as $apartment)
+<div>
+  <canvas id="{{$apartment->id}}"></canvas>
+</div>
+@endforeach
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<script>
+  const ctx = document.getElementById('myChart');
+
+  let labels;
+  
+  axios.get('http://localhost:8000/admin/views/json').then((response) => {
+    console.log(response.data);
+  })
+  const chart_one = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+      datasets: [{
+        label: '# of Votes',
+        data: [12, 19, 3, 5, 2, 3],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+
+
+  
+</script>
 @endsection

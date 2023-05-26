@@ -7,8 +7,8 @@
     <div class="row justify-content-center">
         <div class="col">
             <div class="card">
-              @if (session('status'))
-                <div class="card-header">{{ __('Ciao!') }}</div>
+              @if (Auth::user())
+                <div class="card-header">Ciao {{Auth::user()->name}}!</div>
 
                 <div class="card-body">
                     {{ __('Accedi alla tua lista appartamenti o creane uno dai link sopra.') }}
