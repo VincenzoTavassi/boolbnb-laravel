@@ -51,7 +51,7 @@
 </div>
 
 @foreach($apartments as $apartment)
-<div>
+<div class="my-3">
   <canvas id="{{$apartment->id}}"></canvas>
 </div>
 @endforeach
@@ -61,30 +61,40 @@
 
 <script>
   const ctx = document.getElementById('myChart');
-
-  let labels;
   
   axios.get('http://localhost:8000/admin/views/json').then((response) => {
-    console.log(response.data);
-  })
-  const chart_one = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-      datasets: [{
-        label: '# of Votes',
-        data: [12, 19, 3, 5, 2, 3],
-        borderWidth: 1
-      }]
-    },
-    options: {
-      scales: {
-        y: {
-          beginAtZero: true
-        }
+    const apartments = response.data;
+    apartments.forEach(apartment => {
+      let labels = [];
+      let data = [];
+      const chart = document.getElementById(apartment.id);
+      for(const date in apartment.date_views) {
+        labels.push(date)
+        data.push(apartment.date_views[date]);
       }
-    }
-  });
+
+      const chart_one = new Chart(chart, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [{
+            label: '# di visite uniche per ' + apartment.title,
+            data,
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+      
+
+    })
+  })
 
 
   
