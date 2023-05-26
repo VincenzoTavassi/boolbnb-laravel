@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\MessageController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\HomeController as AdminHomeController;
 use App\Http\Controllers\Admin\PaymentController;
+use App\Http\Controllers\Api\ViewController;
 use App\Http\Controllers\Guest\HomeController as GuestHomeController;
 use Illuminate\Support\Facades\Route;
 
@@ -57,7 +58,10 @@ Route::middleware('auth')
             Route::delete('/messages/{apartment}/{message}/forcedelete', [MessageController::class, 'forcedelete'])->name('messages.forcedelete');
 
             // # Apartments resource
-            Route::get('/dashboard',   [AdminHomeController::class,    'dashboard'])->name('dashboard');
+            Route::get('/dashboard',   [ViewController::class,    'index'])->name('dashboard');
+
+            // # Views index
+            Route::get('views', [ViewController::class, 'index'])->middleware('auth');
         }
     );
 
