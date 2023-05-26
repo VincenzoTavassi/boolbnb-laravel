@@ -21,15 +21,19 @@ class MessageController extends Controller
     {
         $user_id = Auth::id();
         if ($request->term) {
-            $apartment_id = Apartment::where('user_id', '=', $user_id)
+            $apartment_ids = Apartment::where('user_id', '=', $user_id)
                 ->where('title', 'LIKE', '%'.$request->term.'%')
-                ->first()->id;
-                $messages = Message::where('apartment_id', '=', $apartment_id)
+                // ->get();
+                ->pluck('id');
+            $messages = [];    
+            foreach ($apartment_ids as $id) {
+                $messages[] = Message::where('apartment_id', '=', $id)
                 ->with('apartment')
                 ->orderBy('created_at', 'ASC')
                 ->get();
+            }
         } else {
-            $messages = Message::where('user_id', '=', $user_id)
+            $messages[] = Message::where('user_id', '=', $user_id)
                 ->with('apartment')
                 ->orderBy('created_at', 'ASC')
                 ->get();
