@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Apartment;
 use App\Models\View;
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ViewController extends Controller
 {
@@ -17,7 +19,32 @@ class ViewController extends Controller
      */
     public function index()
     {
-        //
+        $user = Auth::user();
+        $apartments = $user->apartments;
+        // Creo intervallo di date
+        $startDate = Carbon::createFromFormat('Y-m-d', Carbon::now()->subDays(6)->toDateString());
+        $endDate = Carbon::createFromFormat('Y-m-d', Carbon::now()->toDateString());
+        $dateRange = CarbonPeriod::create($startDate, $endDate);
+        // Array di date dell'ultima settimana
+        $dates = $dateRange->toArray();
+
+        // Per ogni view di ogni appartamento
+        foreach ($apartments as $apartment) {
+            $date_views = [];
+            // Inserisco le date nell'array date_views
+            foreach ($dates as $date) {
+                $date_views[$date->toDateString()] = 0;
+            }
+            $views = $apartment->views()
+                ->where('date', '>', $startDate->toDateString())
+                ->get(); // Prendi le views maggiori della start date definita
+            foreach ($views as $view) {
+                // Per ogni view, se presente la data nell'array, aggiorna il contatore
+                if (array_key_exists($view->date, $date_views)) $date_views[$view->date]++;
+            }
+            $apartment->date_views = $date_views;
+        }
+        return view('admin.home', compact('apartments'));
     }
 
     /**

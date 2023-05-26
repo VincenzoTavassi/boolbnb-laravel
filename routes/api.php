@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\ApartmentController;
 use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\ViewController;
+use GuzzleHttp\Middleware;
 
 /*
 |--------------------------------------------------------------------------
