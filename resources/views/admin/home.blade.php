@@ -42,10 +42,9 @@
     @endif
   </tbody>
 </table>
-</div>
-            </div>
-        </div>
-    
+      </div>
+    </div>  
+  </div>  
 </div>
 
 <div class="my-3 d-flex justify-content-center flex-column align-items-center">
@@ -59,12 +58,15 @@
   <option value="360">Ultimo anno</option>
 </select>
 </div>
-
-@foreach($apartments as $apartment)
-<div class="my-3">
-  <canvas id="{{$apartment->id}}"></canvas>
+@if($apartments)
+<div class="graphs d-flex flex-column align-items-center">
+  @foreach($apartments as $apartment)
+  <div class="my-3 w-75">
+    <canvas id="{{$apartment->id}}"></canvas>
+  </div>
+  @endforeach
 </div>
-@endforeach
+@endif
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
@@ -72,13 +74,13 @@
 <script>
 const intervalSelect = document.getElementById('interval');
 let chartInstances = [];
-let days = 6;
-createGraph(days)
+let days = 7;
+createGraph(days) // Onload: grafico di 7 giorni
 
-intervalSelect.addEventListener('change', () => {
+intervalSelect.addEventListener('change', () => { // Al change della select
   days = intervalSelect.value;
-   resetChartInstances()
-   createGraph(days)
+   resetChartInstances() // Reset 
+   createGraph(days) // Crea grafico
   })
 
 function createGraph(days) {
@@ -99,7 +101,9 @@ function createGraph(days) {
           datasets: [{
             label: '# di visite uniche per ' + apartment.title,
             data,
-            borderWidth: 1
+            borderWidth: 3,
+            backgroundColor: 'rgb(220, 53, 69)',
+            borderColor: 'brown'
           }]
         },
         options: {
