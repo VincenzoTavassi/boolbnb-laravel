@@ -27,12 +27,12 @@
             <div class="row">
                 <div class="col-4">
                     <h6 class="mb-5">Questo appartamento {{($apartment->visible) ? 'è' : 'non è'}} pubblicato</h6>
-                    <hr class="w-50">
+                    <hr class="w-75">
                     <div class="mb-5">
                         <h5 class="">Indirizzo: </h5>
                         {{$apartment->address}}
                     </div>
-                    <hr class="w-50">
+                    <hr class="w-75">
                     <h5 class="me-2">Prezzo per notte: </h5>
                     {{$apartment->price}} €
                 </div>
