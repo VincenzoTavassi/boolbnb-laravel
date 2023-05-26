@@ -15,8 +15,6 @@
                     <p>Bentornato {{Auth::user()->name}}! Ecco qualche statistica di visualizzazione per i tuoi appartamenti nell'ultima settimana.</p>
                 </div>
                 <div class="card-body">
-
-                
 <table class="table table-striped">
   <thead>
     <tr>
@@ -50,6 +48,18 @@
     
 </div>
 
+<div class="my-3 d-flex justify-content-center flex-column align-items-center">
+<label for="interval" class="mb-2">Oppure seleziona un intervallo per i grafici:</label>
+<select class="form-select w-25" id="interval" aria-label="Default select example">
+  <option selected value="7">Ultima settimana</option>
+  <option value="30">Ultimo mese</option>
+  <option value="60">Ultimi 2 mesi</option>
+  <option value="90">Ultimi 3 mesi</option>
+  <option value="180">Ultimi 6 mesi</option>
+  <option value="360">Ultimo anno</option>
+</select>
+</div>
+
 @foreach($apartments as $apartment)
 <div class="my-3">
   <canvas id="{{$apartment->id}}"></canvas>
@@ -59,8 +69,20 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
-<script>  
-  axios.get('http://localhost:8000/admin/views/json').then((response) => {
+<script>
+const intervalSelect = document.getElementById('interval');
+let chartInstances = [];
+let days = 6;
+createGraph(days)
+
+intervalSelect.addEventListener('change', () => {
+  days = intervalSelect.value;
+   resetChartInstances()
+   createGraph(days)
+  })
+
+function createGraph(days) {
+  axios.get(`http://localhost:8000/admin/views/${days}/json`).then((response) => {
     const apartments = response.data;
     apartments.forEach(apartment => {
       let labels = [];
@@ -70,7 +92,6 @@
         labels.push(date)
         data.push(apartment.date_views[date]);
       }
-
       const chart_one = new Chart(chart, {
         type: 'bar',
         data: {
@@ -88,12 +109,23 @@
             }
           }
         }
-      });
+      })
       
+      chartInstances.push(chart_one);
+
 
     })
-  })
+  })}
 
+function resetChartInstances() {
+  // Itera sulle istanze di Chart e distruggile
+  chartInstances.forEach(chartInstance => {
+    chartInstance.destroy();
+  });
+
+  // Svuota l'array delle istanze di Chart
+  chartInstances = []; 
+}
 
   
 </script>

@@ -17,12 +17,12 @@ class ViewController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($json = false)
+    public function index($days = 6, $json = false)
     {
         $user = Auth::user();
         $apartments = $user->apartments;
         // Creo intervallo di date
-        $startDate = Carbon::createFromFormat('Y-m-d', Carbon::now()->subDays(6)->toDateString());
+        $startDate = Carbon::createFromFormat('Y-m-d', Carbon::now()->subDays($days)->toDateString());
         $endDate = Carbon::createFromFormat('Y-m-d', Carbon::now()->toDateString());
         $dateRange = CarbonPeriod::create($startDate, $endDate);
         // Array di date dell'ultima settimana
