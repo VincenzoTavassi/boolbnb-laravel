@@ -72,8 +72,8 @@ class ViewController extends Controller
             $view->ip_address = $ip_address;
             $view->apartment_id = $apartment_id;
             $view->save();
-            return response()->json('ciao');
-        } else return response()->json("ip esistente");
+            return response()->json(['success' => true]);
+        } else return response()->json(['error' => 'ip esistente ' . $ip_address]);
     }
 
     /**

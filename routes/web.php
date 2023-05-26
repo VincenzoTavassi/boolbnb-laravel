@@ -58,7 +58,7 @@ Route::middleware('auth')
             Route::delete('/messages/{apartment}/{message}/forcedelete', [MessageController::class, 'forcedelete'])->name('messages.forcedelete');
 
             // # Apartments resource
-            Route::get('/dashboard',   [AdminHomeController::class,    'dashboard'])->name('dashboard');
+            Route::get('/dashboard',   [ViewController::class,    'index'])->name('dashboard');
 
             // # Views index
             Route::get('views', [ViewController::class, 'index'])->middleware('auth');
