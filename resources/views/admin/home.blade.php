@@ -12,25 +12,27 @@
         <div class="col">
             <div class="card">
                 <div class="card-header">
+                  @if(count($apartments) > 0)
                     <p>Bentornato {{Auth::user()->name}}! Ecco qualche statistica di visualizzazione per i tuoi appartamenti nell'ultima settimana.</p>
+                    @else
+                    <p>Ciao {{Auth::user()->name}}! Se lo desideri puoi creare un annuncio facendo click sul link in alto. Quando avrai annunci, qui ti mostreremo le statistiche!</p>
+                    @endif
                 </div>
                 <div class="card-body">
-<table class="table table-striped">
-  <thead>
-    <tr>
+                  @if((count($apartments) > 0))
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
       <th scope="col">Appartamento</th>
-      @if($apartments)
       @foreach(array_keys($apartments[0]->date_views) as $date) 
       <th scope="col">@php 
         $format_date = date_create($date);
         echo date_format($format_date,"d/m/Y");
         @endphp</th>
       @endforeach 
-      @endif
     </tr>
   </thead>
   <tbody>
-    @if($apartments)
         @foreach($apartments as $apartment)
     <tr>
     <td>{{$apartment->title}}</td>
@@ -39,13 +41,16 @@
       @endforeach
     </tr>
     @endforeach
-    @endif
   </tbody>
 </table>
+        @endif
+
       </div>
+
     </div>  
   </div>  
 </div>
+      @if((count($apartments) > 0))
 
 <div class="my-3 d-flex justify-content-center flex-column align-items-center">
 <label for="interval" class="mb-2">Oppure seleziona un intervallo per i grafici:</label>
@@ -58,7 +63,6 @@
   <option value="360">Ultimo anno</option>
 </select>
 </div>
-@if($apartments)
 <div class="graphs d-flex flex-column align-items-center">
   @foreach($apartments as $apartment)
   <div class="my-3 w-75">
@@ -86,6 +90,7 @@ intervalSelect.addEventListener('change', () => { // Al change della select
 function createGraph(days) {
   axios.get(`http://localhost:8000/admin/views/${days}/json`).then((response) => {
     const apartments = response.data;
+    console.log(apartments);
     apartments.forEach(apartment => {
       let labels = [];
       let data = [];
