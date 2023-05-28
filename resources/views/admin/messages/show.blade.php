@@ -12,11 +12,13 @@
     
     <div class="card">
         <div class="card-body">
-            <h3>{{ $apartment->title }}</h3>
+            <h3>
+                <a class="apartmentLinks me-2" href="{{route('apartments.show', $apartment)}}">{{$apartment->title}}</a>
+            </h3>
             <hr>
             <div class="row">
                 <div class="col">
-                  <p><b>Mittente: </b> {{$message->email}} </p>
+                  <p class="mb-0"><b>Mittente: </b> {{$message->email}} </p>
                 </div>
             </div>
             <hr>
