@@ -26,12 +26,12 @@ class MessageController extends Controller
                 ->first()->id;
                 $messages = Message::where('apartment_id', '=', $apartment_id)
                 ->with('apartment')
-                ->orderBy('created_at', 'ASC')
+                ->orderBy('created_at', 'DESC')
                 ->get();
         } else {
             $messages = Message::where('user_id', '=', $user_id)
                 ->with('apartment')
-                ->orderBy('created_at', 'ASC')
+                ->orderBy('created_at', 'DESC')
                 ->get();
         }
         // dd($messages);
