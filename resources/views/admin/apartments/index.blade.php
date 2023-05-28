@@ -20,33 +20,39 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($apartments as $apartment)
-            <tr class="align-middle">
-                <th scope="row"><img src="{{$apartment->image}}" alt="{{$apartment->title}}" height="100px"></th>
-                <td class="text-success text-center">
-                    <span>{{$apartment->current_sponsored ? $apartment->current_sponsored['plan'] : ''}}</span><br>
-                    <span>{{$apartment->current_sponsored ? '(-' . $apartment->current_sponsored['time_left'] . ' ore)' : ''}}
-                        </span></td>
-                <td>{{$apartment->title}}</td>
-                <td>{{$apartment->address}}</td>
-                <td>{{$apartment->price}}</td>
-                <td>{{$apartment->updated_at}}</td>
-                <td>{{$apartment->created_at}}</td> 
-                <td>{{($apartment->visible) ? 'Yes' : 'No'}}</td>
-                <td>
-                    <div class="d-flex">
+            @if (count($apartments) > 0)
+                @foreach($apartments as $apartment)
+                <tr class="align-middle">
+                    <th scope="row"><img src="{{$apartment->image}}" alt="{{$apartment->title}}" height="100px"></th>
+                    <td class="text-success text-center">
+                        <span>{{$apartment->current_sponsored ? $apartment->current_sponsored['plan'] : ''}}</span><br>
+                        <span>{{$apartment->current_sponsored ? '(-' . $apartment->current_sponsored['time_left'] . ' ore)' : ''}}
+                            </span></td>
+                    <td>{{$apartment->title}}</td>
+                    <td>{{$apartment->address}}</td>
+                    <td>{{$apartment->price}}</td>
+                    <td>{{$apartment->updated_at}}</td>
+                    <td>{{$apartment->created_at}}</td> 
+                    <td>{{($apartment->visible) ? 'Yes' : 'No'}}</td>
+                    <td>
+                        <div class="d-flex">
 
-                        <a class="me-2" href="{{route('apartments.edit', $apartment)}}">
-                            <i class="bi bi-pencil-fill"></i>
-                        </a>
-                        <a class="me-2" href="{{route('apartments.show', $apartment)}}">
-                            <i class="bi bi-eye-fill"></i>
-                        </a>
-                        <button class="trash bi bi-trash-fill text-danger" data-bs-toggle="modal" data-bs-target="#delete-{{$apartment->id}}" href=""></button>
-                    </td>
-                </div>
+                            <a class="me-2" href="{{route('apartments.edit', $apartment)}}">
+                                <i class="bi bi-pencil-fill"></i>
+                            </a>
+                            <a class="me-2" href="{{route('apartments.show', $apartment)}}">
+                                <i class="bi bi-eye-fill"></i>
+                            </a>
+                            <button class="trash bi bi-trash-fill text-danger" data-bs-toggle="modal" data-bs-target="#delete-{{$apartment->id}}" href=""></button>
+                        </td>
+                    </div>
+                    </tr>
+                @endforeach
+            @else
+                <tr>
+                    <td colspan="9" class="text-center">Non ci sono appartamenti.</td>
                 </tr>
-            @endforeach
+            @endif
         </tbody>
     </table>
     {{$apartments->links()}}

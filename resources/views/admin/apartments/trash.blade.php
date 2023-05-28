@@ -26,20 +26,26 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($apartments as $apartment)
-            <tr>
-                <td>{{$apartment->title}}</td>
-                <td>{{$apartment->address}}</td>
-                <td>{{$apartment->price}}</td>
-                <td>{{$apartment->created_at}}</td> 
-                <td>{{$apartment->updated_at}}</td>
-                <td>{{($apartment->deleted_at)}}</td>
-                <td class="d-flex">
-                    <button class="trash bi bi-reply-fill text-success" data-bs-toggle="modal" data-bs-target="#restore-{{$apartment->id}}" href=""></button>
-                    <button class="trash bi bi-trash-fill text-danger ms-3" data-bs-toggle="modal" data-bs-target="#delete-{{$apartment->id}}" href=""></button>
-                </td>
-            </tr>
-            @endforeach
+            @if (count($apartments) > 0)
+              @foreach($apartments as $apartment)
+                <tr>
+                    <td>{{$apartment->title}}</td>
+                    <td>{{$apartment->address}}</td>
+                    <td>{{$apartment->price}}</td>
+                    <td>{{$apartment->created_at}}</td> 
+                    <td>{{$apartment->updated_at}}</td>
+                    <td>{{($apartment->deleted_at)}}</td>
+                    <td class="d-flex">
+                        <button class="trash bi bi-reply-fill text-success" data-bs-toggle="modal" data-bs-target="#restore-{{$apartment->id}}" href=""></button>
+                        <button class="trash bi bi-trash-fill text-danger ms-3" data-bs-toggle="modal" data-bs-target="#delete-{{$apartment->id}}" href=""></button>
+                    </td>
+                </tr>
+              @endforeach
+            @else
+              <tr>
+                <td colspan="7" class="text-center">Non ci sono appartamenti.</td>
+              </tr>
+            @endif
         </tbody>
     </table>
     {{--{{$apartments->links()}}--}}
