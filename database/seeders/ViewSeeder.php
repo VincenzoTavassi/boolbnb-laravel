@@ -16,13 +16,16 @@ class ViewSeeder extends Seeder
      */
     public function run(Faker $faker)
     {
-        //$labels = ["", "", "", "", "", ""];
-
+        
         for ($i = 0; $i < 15; $i++) {
             $view = new View();
-            $view->date = $faker->dateTime();
+            $view->date = $faker->dateTimeThisMonth();
             $view->ip_address = $faker->localIpv4();
-            $view->apartment_id = $faker->numberBetween(1, 20);
+            $view->apartment_id = $faker->randomElement([19, 54, 12]);
+
+            // $view->date = $faker->dateTimeThisMonth();
+            // $view->ip_address = $faker->localIpv4();
+            // $view->apartment_id = $faker->randomDigit(19, 54, 12);
             $view->save();
         }
     }
