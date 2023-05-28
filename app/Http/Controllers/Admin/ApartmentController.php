@@ -142,7 +142,7 @@ class ApartmentController extends Controller
         if (array_key_exists('visible', $data)) $apartment->visible = 1;
         else $apartment->visible = 0;
         $apartment->save();
-        return to_route('apartments.edit', $apartment)->with('message', 'Appartamento modificato con successo');
+        return to_route('apartments.show', $apartment)->with('message', 'Appartamento modificato con successo');
     }
 
     /**
