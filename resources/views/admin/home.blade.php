@@ -13,65 +13,64 @@
             <div class="card">
                 <div class="card-header">
                   @if(count($apartments) > 0)
-                    <p>Bentornato {{Auth::user()->name}}! Ecco qualche statistica di visualizzazione per i tuoi appartamenti nell'ultima settimana.</p>
+                    Bentornato {{Auth::user()->name}}! Ecco qualche statistica di visualizzazione per i tuoi appartamenti nell'ultima settimana.
                     @else
-                    <p>Ciao {{Auth::user()->name}}! Se lo desideri puoi creare un annuncio facendo click sul link in alto. Quando avrai annunci, qui ti mostreremo le statistiche!</p>
+                    Ciao {{Auth::user()->name}}! 
                     @endif
                 </div>
                 <div class="card-body">
                   @if((count($apartments) > 0))
-                  <table class="table table-striped">
-                    <thead>
-                      <tr>
-      <th scope="col">Appartamento</th>
-      @foreach(array_keys($apartments[0]->date_views) as $date) 
-      <th scope="col">@php 
-        $format_date = date_create($date);
-        echo date_format($format_date,"d/m/Y");
-        @endphp</th>
-      @endforeach 
-    </tr>
-  </thead>
-  <tbody>
-        @foreach($apartments as $apartment)
-    <tr>
-    <td>{{$apartment->title}}</td>
-        @foreach($apartment->date_views as $view)
-      <td class="text-center">{{$view}}</td>
-      @endforeach
-    </tr>
-    @endforeach
-  </tbody>
-</table>
-        @endif
-
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th scope="col">Appartamento</th>
+                          @foreach(array_keys($apartments[0]->date_views) as $date) 
+                          <th scope="col">@php 
+                            $format_date = date_create($date);
+                            echo date_format($format_date,"d/m/Y");
+                            @endphp</th>
+                          @endforeach 
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @foreach($apartments as $apartment)
+                          <tr>
+                            <td>{{$apartment->title}}</td>
+                            @foreach($apartment->date_views as $view)
+                              <td class="text-center">{{$view}}</td>
+                            @endforeach
+                          </tr>
+                        @endforeach
+                      </tbody>
+                    </table>
+                  @else
+                    Se lo desideri puoi creare un annuncio facendo click sul link in alto. Quando avrai annunci, qui ti mostreremo le statistiche!
+                  @endif
+                </div>
+            </div>  
+        </div>  
+    </div>
+    @if((count($apartments) > 0))
+      <div class="my-3 d-flex justify-content-center flex-column align-items-center">
+        <label for="interval" class="mb-2">Oppure seleziona un intervallo per i grafici:</label>
+        <select class="form-select w-25" id="interval" aria-label="Default select example">
+          <option selected value="7">Ultima settimana</option>
+          <option value="30">Ultimo mese</option>
+          <option value="60">Ultimi 2 mesi</option>
+          <option value="90">Ultimi 3 mesi</option>
+          <option value="180">Ultimi 6 mesi</option>
+          <option value="360">Ultimo anno</option>
+        </select>
       </div>
-
-    </div>  
-  </div>  
+      <div class="graphs d-flex flex-column align-items-center">
+        @foreach($apartments as $apartment)
+        <div class="my-3 w-75">
+          <canvas id="{{$apartment->id}}"></canvas>
+        </div>
+        @endforeach
+      </div>
+    @endif
 </div>
-      @if((count($apartments) > 0))
-
-<div class="my-3 d-flex justify-content-center flex-column align-items-center">
-<label for="interval" class="mb-2">Oppure seleziona un intervallo per i grafici:</label>
-<select class="form-select w-25" id="interval" aria-label="Default select example">
-  <option selected value="7">Ultima settimana</option>
-  <option value="30">Ultimo mese</option>
-  <option value="60">Ultimi 2 mesi</option>
-  <option value="90">Ultimi 3 mesi</option>
-  <option value="180">Ultimi 6 mesi</option>
-  <option value="360">Ultimo anno</option>
-</select>
-</div>
-<div class="graphs d-flex flex-column align-items-center">
-  @foreach($apartments as $apartment)
-  <div class="my-3 w-75">
-    <canvas id="{{$apartment->id}}"></canvas>
-  </div>
-  @endforeach
-</div>
-@endif
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
