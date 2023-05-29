@@ -119,9 +119,11 @@ class ApartmentController extends Controller
         });
 
         $apartments = $query->get();
+        foreach ($apartments as $apartment) {
+            $apartment->image = $apartment->getImage();
+        }
         return response()->json($apartments);
     }
-
 
     /**
      * 
@@ -150,6 +152,9 @@ class ApartmentController extends Controller
         $query->orderBy('updated_at', 'desc'); // Ordina per ultimo aggiornamento
         $apartments = $query->get();
 
+        foreach ($apartments as $apartment) {
+            $apartment->image = $apartment->getImage();
+        }
         return response()->json($apartments);
     }
 };
