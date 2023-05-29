@@ -23,7 +23,7 @@
             @if (count($apartments) > 0)
                 @foreach($apartments as $apartment)
                 <tr class="align-middle">
-                    <th scope="row"><img src="{{$apartment->image}}" alt="{{$apartment->title}}" height="100px"></th>
+                    <th scope="row"><img src="{{$apartment->getImage()}}" alt="{{$apartment->title}}" height="100px"></th>
                     <td class="text-success text-center">
                         <span>{{$apartment->current_sponsored ? $apartment->current_sponsored['plan'] : ''}}</span><br>
                         <span>{{$apartment->current_sponsored ? '(-' . $apartment->current_sponsored['time_left'] . ' ore)' : ''}}
